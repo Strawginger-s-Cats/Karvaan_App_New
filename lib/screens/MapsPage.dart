@@ -5,6 +5,7 @@ import 'package:geolocation/geolocation.dart';
 import 'package:karvaan/screens/ChatPage.dart';
 import 'package:karvaan/screens/services/authentication.dart';
 import 'package:karvaan/screens/sideNav/ProfilePage.dart';
+import 'package:karvaan/screens/sideNav/aboutPage.dart';
 import 'package:latlong/latlong.dart';
 import '../Presentation/menu_icon_icons.dart';
 import 'package:flutter/services.dart';
@@ -183,8 +184,8 @@ class _MapsPageState extends State<MapsPage> {
                       color: Color(0xFFFFC495)),
                 ),
                 onTap: () {
-                  Toast.show("Incomplete!", context,
-                      duration: Toast.LENGTH_SHORT);
+                  return Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => About()));
                 },
               ),
             ],

@@ -63,6 +63,7 @@ flutter:
     - assets/images/log.png
     - assets/images/profile.png
     - assets/images/cycle.png
+    - assets/images/ic_launcher_round.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
