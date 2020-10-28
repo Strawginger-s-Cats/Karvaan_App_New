@@ -18,7 +18,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String uId;
+  String uId, name, phone, email;
   List<Cycles> allCycles = <Cycles>[];
   Cycles newCycle;
   TextEditingController _newBikeNameController = new TextEditingController();
@@ -34,33 +34,62 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future getUserInfo() async {
+    //to get user information
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .snapshots()
+        .listen((snapshot) {
+      setState(() {
+        name = snapshot["name"];
+        email = snapshot["email"];
+        phone = snapshot["phoneNo"];
+      });
+    });
+  }
+
   Future getUserBikesFromFirebase() async {
     FirebaseFirestore.instance
         .collection('users')
         .doc(uId)
         .collection("lenderBikes")
-        .get()
-        .then((QuerySnapshot querySnapshot) => {
-              querySnapshot.docs.forEach((doc) {
-                String name = doc["name"];
-                String rent = doc["pricePerHr"];
-                String location = doc["location"];
-                GeoPoint coords = doc["coordinates"];
-                Cycles cycle = Cycles(
-                  name,
-                  location,
-                  coords,
-                  rent,
-                );
-                allCycles.add(cycle);
-              })
-            });
+        .snapshots()
+        .listen((querySnapshot) {
+      setState(() {
+        querySnapshot.docs.forEach((doc) {
+          String name = doc["name"];
+          String rent = doc["pricePerHr"];
+          String location = doc["location"];
+          GeoPoint coords = doc["coordinates"];
+          Cycles cycle = Cycles(
+            name,
+            location,
+            coords,
+            rent,
+          );
+          allCycles.add(cycle);
+        });
+      });
+    });
   }
 
   @override
   void initState() {
     getUserId();
+    getUserInfo();
+    getUserBikesFromFirebase();
+    print(allCycles);
     super.initState();
+  }
+
+  Future<void> deleteBike(String name) {
+    Firestore.instance //adding new bike document
+        .collection('users')
+        .doc(uId)
+        .collection("lenderBikes")
+        .doc(name)
+        .delete();
   }
 
   Future addNewBikeToFirebase() async {
@@ -264,7 +293,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             color: Color(0xFF1E1E29),
                           ),
                           child: FlatButton(
-                            onPressed: () {
+                            onPressed: () async {
                               addItemToList();
                               addNewBikeToFirebase();
                               Toast.show("Incomplete!", context,
@@ -293,13 +322,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void addItemToList() {
-    setState(() {
-      newCycle = new Cycles(
-          _newBikeNameController.text.toString(),
-          _newBikeLocationController.text.toString(),
-          new GeoPoint(0, 0),
-          _newBikeRentController.text.toString());
-    });
+    newCycle = new Cycles(
+        _newBikeNameController.text.toString(),
+        _newBikeLocationController.text.toString(),
+        new GeoPoint(0, 0),
+        _newBikeRentController.text.toString());
   }
 
   @override
@@ -360,7 +387,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     ListTile(
                       title: Text(
-                        'John Wick',
+                        name,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 30,
@@ -386,7 +413,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Padding(
                             padding: EdgeInsets.fromLTRB(20.0, 5.0, 10.0, 5.0),
                             child: Text(
-                              '+91 1234567890',
+                              phone,
                               style: TextStyle(
                                   fontSize: 19,
                                   fontFamily: "Montserrat Medium",
@@ -412,7 +439,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Padding(
                             padding: EdgeInsets.fromLTRB(20.0, 5.0, 10.0, 5.0),
                             child: Text(
-                              'johnwick@gmail.com',
+                              email,
                               style: TextStyle(
                                   fontSize: 19,
                                   fontFamily: "Montserrat Medium",
@@ -476,12 +503,15 @@ class _ProfilePageState extends State<ProfilePage> {
                   _newBikeNameController.clear();
                   _newBikeRentController.clear();
                   _newBikeLocationController.clear();
+                  setState(() {
+                    allCycles.clear();
+                  });
                 }),
             SizedBox(
-              height: 200,
+              height: 400,
               child: Container(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: allCycles.length,
@@ -502,17 +532,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                       SizedBox(
                                         height: 2,
                                       ),
-                                      Switch(
-                                        value: isSwitched,
-                                        onChanged: (value) {
+                                      IconButton(
+                                        icon: Icon(Icons.delete,
+                                            color: Color(0xFFFFC495)),
+                                        onPressed: () {
+                                          deleteBike(allCycles[index].name);
                                           setState(() {
-                                            isSwitched = value;
-                                            print(isSwitched);
+                                            allCycles.clear();
                                           });
                                         },
-                                        activeTrackColor:
-                                            Colors.lightGreenAccent,
-                                        activeColor: Colors.green,
                                       )
                                     ],
                                   ),
@@ -525,8 +553,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 image: DecorationImage(
-                                    image:
-                                        AssetImage('assets/images/profile.png'),
+                                    image: AssetImage('assets/images/icon.png'),
                                     fit: BoxFit.fill),
                                 shape: BoxShape.rectangle,
                               ),
@@ -546,16 +573,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(
-                                      Icons.rate_review,
-                                      color: Color(0xFFFFC495),
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
                                     Text(
-                                      'Rate',
+                                      '${allCycles[index].location}',
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontFamily: "Montserrat Regular",
