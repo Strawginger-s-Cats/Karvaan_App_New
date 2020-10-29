@@ -32,38 +32,39 @@ class _MapsPageState extends State<MapsPage> {
 
   final GlobalKey _scaffoldKey = new GlobalKey();
 
-  var points = <LatLng>[
-    //somepoints for polyline
-    new LatLng(25.43, 81.84),
-    new LatLng(25.49, 81.85),
-    // new LatLng(25.53,81.86),
-    // new LatLng(25.59,81.87),
-    // new LatLng(25.62,81.89),
-  ];
+  // var points = <LatLng>[
+  //   //somepoints for polyline
+  //   new LatLng(25.43, 81.84),
+  //   new LatLng(25.49, 81.85),
+  //   // new LatLng(25.53,81.86),
+  //   // new LatLng(25.59,81.87),
+  //   // new LatLng(25.62,81.89),
+  // ];
 
   List<Marker> allMarkers = [];
-  setMarkers() {
-    allMarkers.add(
-      new Marker(
-          width: 30.0,
-          height: 30.0,
-          point: refresh_location,
-          builder: (context) => new Container(
-                child: IconButton(
-                  icon: Icon(
-                    Icons.location_on,
-                    color: Color(0xFFFFC495),
-                  ),
-                  color: Colors.red,
-                  iconSize: 30,
-                  onPressed: () {
-                    print(current_location);
-                  },
-                ),
-              )),
-    );
-    return allMarkers;
-  }
+
+  // setMarkers() {
+  //   allMarkers.add(
+  //     new Marker(
+  //         width: 30.0,
+  //         height: 30.0,
+  //         point: refresh_location,
+  //         builder: (context) => new Container(
+  //               child: IconButton(
+  //                 icon: Icon(
+  //                   Icons.location_on,
+  //                   color: Color(0xFFFFC495),
+  //                 ),
+  //                 color: Colors.red,
+  //                 iconSize: 30,
+  //                 onPressed: () {
+  //                   print(current_location);
+  //                 },
+  //               ),
+  //             )),
+  //   );
+  //   return allMarkers;
+  // }
 
   MapController controller = new MapController();
 
@@ -124,10 +125,6 @@ class _MapsPageState extends State<MapsPage> {
             13.4);
         current_location =
             new LatLng(response.location.latitude, response.location.longitude);
-        // setState(() {
-        //   refresh_location = current_location;
-        // });
-        // });
         allMarkers.add(
           new Marker(
               width: 30.0,
@@ -474,7 +471,7 @@ class _MapsPageState extends State<MapsPage> {
                   Spacer(),
                   IconButton(
                     icon: Icon(
-                      MdiIcons.rotateLeft,
+                      MdiIcons.crosshairsGps,
                       color: Color(0xFFFFC495),
                       size: 40,
                     ),

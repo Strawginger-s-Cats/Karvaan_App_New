@@ -27,14 +27,14 @@ class _MapsPageRenterState extends State<MapsPageRenter> {
 
   final GlobalKey _scaffoldKey = new GlobalKey();
 
-  var points = <LatLng>[
-    //somepoints for polyline
-    new LatLng(25.43, 81.84),
-    new LatLng(25.49, 81.85),
-    // new LatLng(25.53,81.86),
-    // new LatLng(25.59,81.87),
-    // new LatLng(25.62,81.89),
-  ];
+  // var points = <LatLng>[
+  //   //somepoints for polyline
+  //   new LatLng(25.43, 81.84),
+  //   new LatLng(25.49, 81.85),
+  //   // new LatLng(25.53,81.86),
+  //   // new LatLng(25.59,81.87),
+  //   // new LatLng(25.62,81.89),
+  // ];
 
   MapController controller = new MapController();
 
