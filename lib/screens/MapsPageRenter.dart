@@ -86,10 +86,10 @@ class _MapsPageRenterState extends State<MapsPageRenter> {
               builder: (context) => new Container(
                     child: IconButton(
                       icon: Icon(
-                        Icons.location_on,
+                        MdiIcons.circleSlice8,
                         color: Color(0xFFFFF7C6),
                       ),
-                      iconSize: 35,
+                      iconSize: 20,
                       onPressed: () {
                         print(current_location);
                       },

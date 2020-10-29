@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:karvaan/models/Request.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:toast/toast.dart';
 
@@ -8,6 +11,56 @@ class RequestPage extends StatefulWidget {
 }
 
 class _RequestPageState extends State<RequestPage> {
+  String uId;
+  List<Request> requests = <Request>[];
+
+  getUserId() {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (auth.currentUser != null) {
+      uId = auth.currentUser.uid;
+    }
+  }
+
+  Future getRentRequestsFromFirebase() async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .collection("rentRequests")
+        .snapshots()
+        .listen((querySnapshot) {
+      setState(() {
+        querySnapshot.docs.forEach((doc) {
+          Request request = new Request(doc["renterId"], doc["renterName"],
+              doc["renterPhone"], doc["location"]);
+          requests.add(request);
+        });
+      });
+    });
+  }
+
+  Future createChatDoc(String renterId) async {
+    Firestore.instance //adding new lender bike document
+        .collection('chats')
+        .doc(uId + renterId) //chat doc is named as lenderId + renterId
+        .set({'bookingFinal': false});
+  }
+
+  Future<void> deleteRequest(String name) {
+    Firestore.instance
+        .collection('users')
+        .doc(uId)
+        .collection("renterRequests")
+        .doc(name)
+        .delete();
+  }
+
+  @override
+  void initState() {
+    getUserId();
+    getRentRequestsFromFirebase();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +73,7 @@ class _RequestPageState extends State<RequestPage> {
         ),
         centerTitle: true,
         title: Text(
-          "Rent Requests",
+          "Chat Requests",
           style: TextStyle(
               fontFamily: "Montserrat Bold",
               color: Color(0xFFE5E5E5),
@@ -31,7 +84,7 @@ class _RequestPageState extends State<RequestPage> {
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: ListView.builder(
-          itemCount: 4,
+          itemCount: requests.length,
           itemBuilder: (BuildContext context, int index) {
             return Padding(
               padding: const EdgeInsets.all(5.0),
@@ -52,7 +105,7 @@ class _RequestPageState extends State<RequestPage> {
                     ),
                   ),
                   title: Text(
-                    'Albus Dumbledore',
+                    requests[index].renterName,
                     style: TextStyle(
                         fontSize: 18,
                         fontFamily: "Montserrat Medium",
@@ -75,7 +128,7 @@ class _RequestPageState extends State<RequestPage> {
                             width: 5,
                           ),
                           Text(
-                            'Hero Gaze',
+                            requests[index].location.toString(),
                             style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: "Montserrat Regular",
@@ -97,7 +150,7 @@ class _RequestPageState extends State<RequestPage> {
                                   width: 1,
                                 ),
                                 Text(
-                                  "Accept",
+                                  "Decline",
                                   style: TextStyle(
                                       fontFamily: "Montserrat Regular",
                                       color: Color(0xFFFFF7C6)),
@@ -105,8 +158,10 @@ class _RequestPageState extends State<RequestPage> {
                               ],
                             ),
                             onPressed: () {
-                              Toast.show("Incomplete!", context,
-                                  duration: Toast.LENGTH_SHORT);
+                              print((requests[index].renterName));
+                              // setState(() {
+                              deleteRequest(requests[index].renterName);
+                              // });
                             },
                           ),
                           FlatButton(
@@ -132,6 +187,8 @@ class _RequestPageState extends State<RequestPage> {
                             onPressed: () {
                               Toast.show("Incomplete!", context,
                                   duration: Toast.LENGTH_SHORT);
+                              createChatDoc(requests[index].renterId);
+                              deleteRequest(requests[index].renterName);
                             },
                           )
                         ],

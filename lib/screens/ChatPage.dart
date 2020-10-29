@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -268,7 +269,7 @@ class _ChatPageState extends State<ChatPage> {
                             ),
                             child: FlatButton(
                               onPressed: () async {
-                                clearChat();
+                                clearChat("hello");
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
@@ -299,9 +300,11 @@ class _ChatPageState extends State<ChatPage> {
         });
   }
 
-  Future<void> clearChat() {
-    return null;
-    ////function to delete chat history and document from firestore
+  Future<void> clearChat(String userId) {
+    // Firestore.instance //adding new bike document
+    //     .collection('chats')
+    //     .doc(userId+renterId)    //here we have to check ih the current user is renter or user
+    //     .delete();
   }
 
   List<DropdownMenuItem<Message>> buildDropDownMenuItems(messages) {

@@ -158,10 +158,10 @@ class _MapsPageState extends State<MapsPage> {
               builder: (context) => new Container(
                     child: IconButton(
                       icon: Icon(
-                        Icons.location_on,
+                        MdiIcons.circleSlice8,
                         color: Color(0xFFFFF7C6),
                       ),
-                      iconSize: 35,
+                      iconSize: 20,
                       onPressed: () {
                         print(current_location);
                       },
@@ -183,6 +183,8 @@ class _MapsPageState extends State<MapsPage> {
       'renterName': name,
       'renterPhone': phone,
       'renterId': uId,
+      'location':
+          new GeoPoint(current_location.latitude, current_location.longitude),
     });
   }
 
@@ -443,22 +445,6 @@ class _MapsPageState extends State<MapsPage> {
                             fit: BoxFit.fill,
                           )),
                         ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        Shimmer.fromColors(
-                          baseColor: Color(0xFF1E1E29),
-                          highlightColor: Color(0xFFFFF7C6),
-                          child: Text(
-                            "KARVAAN",
-                            style: TextStyle(
-                              fontFamily: 'Montserrat Bold',
-                              color: Color(0xFF1E1E29),
-                              fontSize: 18,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -605,8 +591,8 @@ class _MapsPageState extends State<MapsPage> {
                         color: Color(0x001E1E29),
                         child: ListTile(
                           trailing: Container(
-                            width: 50,
-                            height: 50,
+                            width: 55,
+                            height: 55,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -624,7 +610,7 @@ class _MapsPageState extends State<MapsPage> {
                                     ),
                                     Text(availableCycles[index].pricePerHr,
                                         style: TextStyle(
-                                            fontSize: 24,
+                                            fontSize: 20,
                                             fontFamily: "Montserrat Bold",
                                             color: Color(0xFFFFF7C6)))
                                   ],
