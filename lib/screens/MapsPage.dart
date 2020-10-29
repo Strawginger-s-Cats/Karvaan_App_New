@@ -27,6 +27,7 @@ class _MapsPageState extends State<MapsPage> {
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     getUserBikesFromFirebase();
+
     super.initState();
   }
 
@@ -79,14 +80,6 @@ class _MapsPageState extends State<MapsPage> {
 
   getLocation() {
     //get the location of the user
-
-    // StreamSubscription<LocationResult> subscription = Geolocation.currentLocation(accuracy: LocationAccuracy.best).listen((result) {
-    //   if(result.isSuccessful) {
-    //     double latitude = result.location.latitude;
-    //     // todo with result
-    //   }
-    // });
-
     return getPermission().then((result) async {
       if (result.isSuccessful) {
         LocationResult coords = await Geolocation.lastKnownLocation();
@@ -129,16 +122,81 @@ class _MapsPageState extends State<MapsPage> {
         // response.listen((value) {
         controller.move(
             new LatLng(response.location.latitude, response.location.longitude),
-            15.0);
+            13.4);
         current_location =
             new LatLng(response.location.latitude, response.location.longitude);
-        setState(() {
-          refresh_location = current_location;
-        });
+        // setState(() {
+        //   refresh_location = current_location;
         // });
-        print(current_location);
+        // });
+        allMarkers.add(
+          new Marker(
+              width: 30.0,
+              height: 30.0,
+              point: refresh_location,
+              builder: (context) => new Container(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.location_on,
+                        color: Color(0xFFFFF7C6),
+                      ),
+                      iconSize: 35,
+                      onPressed: () {
+                        print(current_location);
+                      },
+                    ),
+                  )),
+        );
+        print("LOCATION: " + current_location.toString());
       }
     });
+  }
+
+  Widget loadMap() {
+    return StreamBuilder(
+        stream: Firestore.instance.collection("availableBikes").snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return Text('Loading maps..Please Wait');
+          for (int i = 0; i < snapshot.data.documents.length; i++) {
+            allMarkers.add(new Marker(
+                width: 30,
+                height: 30,
+                point: new LatLng(
+                  snapshot.data.documents[i]['coordinates'].latitude,
+                  snapshot.data.documents[i]['coordinates'].longitude,
+                ),
+                builder: (context) => new Container(
+                      child: IconButton(
+                        icon: Icon(
+                          MdiIcons.bicycle,
+                          color: Color(0xFFFFC495),
+                        ),
+                        iconSize: 30,
+                        onPressed: () {
+                          print(snapshot.data.documents[i]['location']);
+                        },
+                      ),
+                    )));
+          }
+          return FlutterMap(
+            mapController: controller,
+            options: new MapOptions(
+              center: buildMap(),
+              zoom: 13.4,
+            ),
+            layers: [
+              new TileLayerOptions(
+                  urlTemplate:
+                      'https://api.mapbox.com/styles/v1/vibhanshuv/ckg9buo07066e19o9xjy4w9f3/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoidmliaGFuc2h1diIsImEiOiJja2c5MjltZ2IwajZnMndvMzhnZmNmcng1In0.1pJL10lwpPsJCuN4Yh6TDg',
+                  additionalOptions: {
+                    'accessToken':
+                        "pk.eyJ1IjoidmliaGFuc2h1diIsImEiOiJja2c5MjltZ2IwajZnMndvMzhnZmNmcng1In0.1pJL10lwpPsJCuN4Yh6TDg",
+                    'id': 'mapbox.mapbox-streets-v8'
+                  }),
+              new MarkerLayerOptions(markers: allMarkers)
+            ],
+          );
+        });
   }
 
   @override
@@ -253,34 +311,7 @@ class _MapsPageState extends State<MapsPage> {
       ),
       body: Builder(
         builder: (context) => Stack(children: <Widget>[
-          FlutterMap(
-            mapController: controller,
-            options: new MapOptions(
-              center: buildMap(),
-              zoom: 13.0,
-            ),
-            layers: [
-              new TileLayerOptions(
-                  urlTemplate:
-                      'https://api.mapbox.com/styles/v1/vibhanshuv/ckg9buo07066e19o9xjy4w9f3/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoidmliaGFuc2h1diIsImEiOiJja2c5MjltZ2IwajZnMndvMzhnZmNmcng1In0.1pJL10lwpPsJCuN4Yh6TDg',
-                  additionalOptions: {
-                    'accessToken':
-                        "pk.eyJ1IjoidmliaGFuc2h1diIsImEiOiJja2c5MjltZ2IwajZnMndvMzhnZmNmcng1In0.1pJL10lwpPsJCuN4Yh6TDg",
-                    'id': 'mapbox.mapbox-streets-v8'
-                  }),
-              // new PolylineLayerOptions(
-              //   polylines: [
-              //     new Polyline(
-              //       points: points,
-              //       strokeWidth: 5.0,
-              //       color: Color(0xFF1E1E29),
-              //     )
-              //   ]
-              // ),
-              //
-              new MarkerLayerOptions(markers: setMarkers())
-            ],
-          ),
+          loadMap(),
           DraggableScrollableSheet(
             initialChildSize: 0.20,
             maxChildSize: 0.5,

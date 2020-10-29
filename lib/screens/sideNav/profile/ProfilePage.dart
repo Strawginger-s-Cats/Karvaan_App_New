@@ -1,16 +1,22 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:karvaan/models/Cycles.dart';
 import 'package:latlong/latlong.dart';
 import 'package:karvaan/screens/MapsPageRenter.dart';
 import 'package:karvaan/screens/sideNav/profile/RequestPage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:toast/toast.dart';
+
+import '../../ChatPage.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -388,17 +394,25 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Center(
                 child: Column(children: <Widget>[
-              Container(
-                margin: EdgeInsets.all(30),
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      image: NetworkImage(
-                          'https://googleflutter.com/sample_image.jpg'),
-                      fit: BoxFit.fill),
+              GestureDetector(
+                child: Container(
+                  margin: EdgeInsets.all(30),
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: NetworkImage(
+                            'https://googleflutter.com/sample_image.jpg'),
+                        fit: BoxFit.fill),
+                  ),
                 ),
+                onTap: () async {
+                  File image =
+                      await ImagePicker.pickImage(source: ImageSource.gallery);
+                  print(image.path);
+                  uploadProfilePicture(image.path.toString());
+                },
               ),
             ])),
 
@@ -522,20 +536,83 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
 
             //Here begins the second card,displaying a person's cycles....
-            FloatingActionButton(
-                //tap on the button to add your cycles......
-                backgroundColor: Color(0xFFFFC495),
-                child: Icon(Icons.add),
-                mini: true,
-                onPressed: () {
-                  createAlertDialog(context);
-                  _newBikeNameController.clear();
-                  _newBikeRentController.clear();
-                  _newBikeLocationController.clear();
-                  setState(() {
-                    allCycles.clear();
-                  });
-                }),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                color: Color(0xFFFFF7C6),
+              ),
+              margin: EdgeInsets.all(24.0),
+              child: SizedBox(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 6.0, 0.0, 6.0),
+                  child: (Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      FlatButton(
+                          //tap on the button to add your cycles.....
+                          child: Column(
+                            children: <Widget>[
+                              Icon(Icons.add),
+                              Text(
+                                "New Bike",
+                                style: TextStyle(
+                                    fontFamily: "Montserrat SemiBold",
+                                    fontSize: 10),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            createAlertDialog(context);
+                            _newBikeNameController.clear();
+                            _newBikeRentController.clear();
+                            _newBikeLocationController.clear();
+                            setState(() {
+                              allCycles.clear();
+                            });
+                          }),
+                      FlatButton(
+                          //tap on the button to add your cycles.....
+                          child: Column(
+                            children: <Widget>[
+                              Icon(Icons.message),
+                              Text(
+                                "Chat",
+                                style: TextStyle(
+                                    fontFamily: "Montserrat SemiBold",
+                                    fontSize: 10),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            return Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ChatPage()));
+                          }),
+                      FlatButton(
+                          //tap on the button to add your cycles.....
+                          child: Column(
+                            children: <Widget>[
+                              Icon(Icons.map),
+                              Text(
+                                "Map",
+                                style: TextStyle(
+                                    fontFamily: "Montserrat SemiBold",
+                                    fontSize: 10),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            return Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MapsPageRenter()));
+                          }),
+                    ],
+                  )),
+                ),
+              ),
+            ),
             SizedBox(
               height: 400,
               child: Container(
@@ -644,5 +721,17 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         )));
+  }
+
+  uploadProfilePicture(String imagePath) async {
+    File file = File(imagePath);
+    try {
+      await FirebaseStorage.instance
+          .ref()
+          .child('users/' + uId + '/profile.png')
+          .putFile(file);
+    } on FirebaseException catch (e) {
+      print(e);
+    }
   }
 }
