@@ -2,12 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:international_phone_input/international_phone_input.dart';
+import 'package:karvaan/screens/MapsPage.dart';
 import 'package:karvaan/screens/authentication/GoogleOTP.dart';
 import 'package:karvaan/screens/authentication/OTPpage.dart';
 import 'package:karvaan/screens/services/authentication.dart';
 import 'package:toast/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 
 class GooglePh extends StatefulWidget {
   @override
@@ -15,40 +15,35 @@ class GooglePh extends StatefulWidget {
 }
 
 class _GooglePhState extends State<GooglePh> {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final databaseReference = Firestore.instance;
 
   String getUId() {
-                        final User user = _auth.currentUser;
-                        final uid = user.uid;
+    final User user = _auth.currentUser;
+    final uid = user.uid;
 
-                        Toast.show(uid, context,
-                          duration: Toast.LENGTH_SHORT);
+    Toast.show(uid, context, duration: Toast.LENGTH_SHORT);
 
-                        return uid;
+    return uid;
 
-                        // here you write the codes to input the data into firestore
-                      }
+    // here you write the codes to input the data into firestore
+  }
 
   User getUser() {
-                        final User user = _auth.currentUser;
+    final User user = _auth.currentUser;
 
-                        return user;
+    return user;
 
-                        // here you write the codes to input the data into firestore
-                      }
+    // here you write the codes to input the data into firestore
+  }
 
-   void createRecord(String email, String name,String phoneNo) async {
-                            await databaseReference.collection("users")
-                                .document(getUId())
-                                .setData({
-                                  'email': email,
-                                  'name': name,
-                                  'phoneNo': phoneNo,
-                                });
-                          }
-
+  void createRecord(String email, String name, String phoneNo) async {
+    await databaseReference.collection("users").document(getUId()).set({
+      'email': email,
+      'name': name,
+      'phoneNo': phoneNo,
+    });
+  }
 
   String phoneNumber = "", verificationId, smsCode;
   bool codeSent = false;
@@ -149,13 +144,11 @@ class _GooglePhState extends State<GooglePh> {
                       print(phoneNumber);
                       Toast.show("Incomplete!", context,
                           duration: Toast.LENGTH_SHORT);
-                        createRecord(getUser().email, getUser().displayName,getUser().phoneNumber);
+                      createRecord(getUser().email, getUser().displayName,
+                          getUser().phoneNumber);
 
-                      return Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  GoogleOTP("+91" + phoneNumber)));
+                      return Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MapsPage()));
                     },
                   ))
             ],

@@ -6,7 +6,6 @@ import 'package:karvaan/screens/authentication/OTPpage.dart';
 import 'package:karvaan/screens/services/authentication.dart';
 import 'package:toast/toast.dart';
 
-
 class PhoneVerifPage extends StatefulWidget {
   @override
   _PhoneVerifPageState createState() => _PhoneVerifPageState();
