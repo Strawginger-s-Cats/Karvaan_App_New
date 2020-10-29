@@ -27,7 +27,6 @@ class _MapsPageState extends State<MapsPage> {
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     getUserBikesFromFirebase();
-
     super.initState();
   }
 
