@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:karvaan/models/Cycles.dart';
+import 'package:karvaan/screens/ChatPage.dart';
 import 'package:latlong/latlong.dart';
 import 'package:karvaan/screens/MapsPageRenter.dart';
 import 'package:karvaan/screens/sideNav/profile/RequestPage.dart';
@@ -522,20 +523,85 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
 
             //Here begins the second card,displaying a person's cycles....
-            FloatingActionButton(
-                //tap on the button to add your cycles......
-                backgroundColor: Color(0xFFFFC495),
-                child: Icon(Icons.add),
-                mini: true,
-                onPressed: () {
-                  createAlertDialog(context);
-                  _newBikeNameController.clear();
-                  _newBikeRentController.clear();
-                  _newBikeLocationController.clear();
-                  setState(() {
-                    allCycles.clear();
-                  });
-                }),
+            /*$$$$$$$$$$$ App icon tray &&&&&&&&&&&&&&&& */
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                color: Color(0xFFFFF7C6),
+              ),
+              margin: EdgeInsets.all(24.0),
+              child: SizedBox(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 6.0, 0.0, 6.0),
+                  child: (Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      FlatButton(
+                          //tap on the button to add your cycles.....
+                          child: Column(
+                            children: <Widget>[
+                              Icon(Icons.add),
+                              Text(
+                                "New Bike",
+                                style: TextStyle(
+                                    fontFamily: "Montserrat SemiBold",
+                                    fontSize: 10),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            createAlertDialog(context);
+                            _newBikeNameController.clear();
+                            _newBikeRentController.clear();
+                            _newBikeLocationController.clear();
+                            setState(() {
+                              allCycles.clear();
+                            });
+                          }),
+                      FlatButton(
+                          //tap on the button to add your cycles.....
+                          child: Column(
+                            children: <Widget>[
+                              Icon(Icons.message),
+                              Text(
+                                "Chat",
+                                style: TextStyle(
+                                    fontFamily: "Montserrat SemiBold",
+                                    fontSize: 10),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            return Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ChatPage()));
+                          }),
+                      FlatButton(
+                          //tap on the button to add your cycles.....
+                          child: Column(
+                            children: <Widget>[
+                              Icon(Icons.map),
+                              Text(
+                                "Map",
+                                style: TextStyle(
+                                    fontFamily: "Montserrat SemiBold",
+                                    fontSize: 10),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            return Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MapsPageRenter()));
+                          }),
+                    ],
+                  )),
+                ),
+              ),
+            ),
+
             SizedBox(
               height: 400,
               child: Container(
