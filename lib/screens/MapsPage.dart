@@ -518,28 +518,28 @@ class _MapsPageState extends State<MapsPage> {
                   // ...
                 },
               ),
-              Divider(
-                // thickness: 1,
-                color: Color(0xFFFFC495),
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.settings,
-                  color: Color(0xFFFFC495),
-                ),
-                title: Text(
-                  'Settings',
-                  style: TextStyle(
-                      fontFamily: 'Montserrat SemiBold',
-                      color: Color(0xFFFFC495)),
-                ),
-                onTap: () {
-                  Toast.show("Incomplete!", context,
-                      duration: Toast.LENGTH_SHORT);
-                  // app settings
-                  // ...
-                },
-              ),
+              // Divider(
+              //   // thickness: 1,
+              //   color: Color(0xFFFFC495),
+              // ),
+              // ListTile(
+              //   leading: Icon(
+              //     Icons.settings,
+              //     color: Color(0xFFFFC495),
+              //   ),
+              //   title: Text(
+              //     'Settings',
+              //     style: TextStyle(
+              //         fontFamily: 'Montserrat SemiBold',
+              //         color: Color(0xFFFFC495)),
+              //   ),
+              //   onTap: () {
+              //     Toast.show("Incomplete!", context,
+              //         duration: Toast.LENGTH_SHORT);
+              //     // app settings
+              //     // ...
+              //   },
+              // ),
               Divider(
                 // thickness: 1,
                 color: Color(0xFFFFC495),
