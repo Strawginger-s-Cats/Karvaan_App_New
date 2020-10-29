@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocation/geolocation.dart';
@@ -22,10 +23,12 @@ class MapsPage extends StatefulWidget {
 class _MapsPageState extends State<MapsPage> {
   LatLng current_location, refresh_location;
   List<Cycles> availableCycles = <Cycles>[];
+  String name, email, phone, uId;
 
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    getUserInfo();
     getUserBikesFromFirebase();
     super.initState();
   }
@@ -67,6 +70,25 @@ class _MapsPageState extends State<MapsPage> {
   // }
 
   MapController controller = new MapController();
+
+  Future getUserInfo() async {
+    //to get user information
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (auth.currentUser != null) {
+      uId = auth.currentUser.uid;
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(uId)
+          .snapshots()
+          .listen((snapshot) {
+        setState(() {
+          name = snapshot["name"];
+          email = snapshot["email"];
+          phone = snapshot["phoneNo"];
+        });
+      });
+    }
+  }
 
   getPermission() async {
     //ask permission for geolocation
@@ -148,6 +170,187 @@ class _MapsPageState extends State<MapsPage> {
     });
   }
 
+  Future sendChatRequest(String ownerId) async {
+    Firestore.instance //adding new lender bike document
+        .collection('users')
+        .doc(ownerId)
+        .collection("rentRequests")
+        .doc(name)
+        .set({
+      'renterName': name,
+      'renterPhone': phone,
+      'renterId': uId,
+    });
+  }
+
+  Future<int> createConfirmationDialog(BuildContext context, Cycles cycle) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Color(0xFFFFF7C6),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                height: 180,
+                width: 120,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            cycle.name,
+                            style: TextStyle(
+                                fontFamily: "Montserrat Bold",
+                                fontSize: 20,
+                                color: Color(0xFF1E1E29)),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: 60, top: 0, right: 60, bottom: 0),
+                        child: Divider(
+                          thickness: 1,
+                          color: Color(0xFFFFC495),
+                          height: 15.0,
+                          indent: 5.0,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Pick-Up:",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: "Montserrat Bold",
+                                  color: Color(0xFF1E1E29))),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(cycle.location,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: "Montserrat SemiBold",
+                                  color: Color(0xFF1E1E29))),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Rent:",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: "Montserrat Bold",
+                                  color: Color(0xFF1E1E29))),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(cycle.pricePerHr + "/hr.",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: "Montserrat SemiBold",
+                                  color: Color(0xFF1E1E29))),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: 20, top: 0, right: 20, bottom: 0),
+                        child: Divider(
+                          // thickness: 1,
+                          color: Color(0xFFFFC495),
+                          height: 15.0,
+                          indent: 5.0,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Do you want to send a chat request?",
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontFamily: "Montserrat Regular",
+                                  color: Color(0xFF1E1E29))),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            height: 30,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Color(0xFF1E1E29),
+                            ),
+                            child: FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Center(
+                                child: Text(
+                                  "No",
+                                  style: TextStyle(
+                                      color: Color(0xFFE5E5E5),
+                                      fontSize: 14,
+                                      fontFamily: 'Montserrat Bold'),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 30,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Color(0xFF1E1E29),
+                            ),
+                            child: FlatButton(
+                              onPressed: () async {
+                                String _ownerId = cycle.ownerId;
+                                sendChatRequest(_ownerId);
+                                Navigator.of(context).pop(); //pass bike data
+                              },
+                              child: Center(
+                                child: Text(
+                                  "Yes",
+                                  style: TextStyle(
+                                      color: Color(0xFFE5E5E5),
+                                      fontSize: 14,
+                                      fontFamily: 'Montserrat Bold'),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   Widget loadMap() {
     return StreamBuilder(
         stream: Firestore.instance.collection("availableBikes").snapshots(),
@@ -169,6 +372,19 @@ class _MapsPageState extends State<MapsPage> {
                         ),
                         iconSize: 30,
                         onPressed: () {
+                          GeoPoint loc = new GeoPoint(
+                            snapshot.data.documents[i]['coordinates'].latitude,
+                            snapshot.data.documents[i]['coordinates'].longitude,
+                          );
+                          Cycles _thisCycle = new Cycles(
+                            snapshot.data.documents[i]["name"],
+                            snapshot.data.documents[i]["ownerId"],
+                            snapshot.data.documents[i]["owner"],
+                            snapshot.data.documents[i]["location"],
+                            loc,
+                            snapshot.data.documents[i]["pricePerHr"],
+                          );
+                          createConfirmationDialog(context, _thisCycle);
                           print(snapshot.data.documents[i]['location']);
                         },
                       ),
@@ -426,13 +642,8 @@ class _MapsPageState extends State<MapsPage> {
                             ],
                           ),
                           onTap: () {
-                            Toast.show("Incomplete!", context,
-                                duration: Toast.LENGTH_SHORT);
-                            return Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChatPage())); //not working because of context, find a fix.
+                            createConfirmationDialog(
+                                context, availableCycles[index]);
                           },
                         ),
                       );
