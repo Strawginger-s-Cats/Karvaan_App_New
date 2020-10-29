@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:international_phone_input/international_phone_input.dart';
 import 'package:karvaan/screens/MapsPage.dart';
-import 'package:karvaan/screens/authentication/GoogleOTP.dart';
 import 'package:karvaan/screens/authentication/OTPpage.dart';
 import 'package:karvaan/screens/services/authentication.dart';
 import 'package:toast/toast.dart';
