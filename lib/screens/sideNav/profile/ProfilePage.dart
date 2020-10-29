@@ -18,7 +18,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String uId, name, phone, email;
+  String uId, name = "Error!", phone = 'Error!', email = "Error!";
   List<Cycles> allCycles = <Cycles>[];
   Cycles newCycle;
   TextEditingController _newBikeNameController = new TextEditingController();
@@ -58,12 +58,12 @@ class _ProfilePageState extends State<ProfilePage> {
         .listen((querySnapshot) {
       setState(() {
         querySnapshot.docs.forEach((doc) {
-          String name = doc["name"];
+          String bikeName = doc["name"];
           String rent = doc["pricePerHr"];
           String location = doc["location"];
           GeoPoint coords = doc["coordinates"];
           Cycles cycle = Cycles(
-            name,
+            bikeName,
             uId,
             name,
             location,
