@@ -64,6 +64,8 @@ class _ProfilePageState extends State<ProfilePage> {
           GeoPoint coords = doc["coordinates"];
           Cycles cycle = Cycles(
             name,
+            uId,
+            name,
             location,
             coords,
             rent,
@@ -90,6 +92,11 @@ class _ProfilePageState extends State<ProfilePage> {
         .collection("lenderBikes")
         .doc(name)
         .delete();
+
+    Firestore.instance //adding new availble bike document
+        .collection('availableBikes')
+        .doc(name)
+        .delete();
   }
 
   Future addNewBikeToFirebase() async {
@@ -98,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
     var addresses = await Geocoder.local.findAddressesFromQuery(query);
     var first = addresses.first;
 
-    Firestore.instance //adding new bike document
+    Firestore.instance //adding new lender bike document
         .collection('users')
         .doc(uId)
         .collection("lenderBikes")
@@ -109,6 +116,26 @@ class _ProfilePageState extends State<ProfilePage> {
       'location': newCycle.location,
       'pricePerHr': newCycle.pricePerHr,
       'name': newCycle.name,
+      'ownerId': uId,
+      'owner': name,
+    });
+
+    Firestore.instance //adding new bike document
+        .collection('users')
+        .doc(uId)
+        .update({'isLender': true}).then((value) => print("Updated"));
+
+    Firestore.instance //adding new availble bike document
+        .collection('availableBikes')
+        .doc(newCycle.name)
+        .set({
+      'coordinates':
+          new GeoPoint(first.coordinates.latitude, first.coordinates.longitude),
+      'location': newCycle.location,
+      'pricePerHr': newCycle.pricePerHr,
+      'name': newCycle.name,
+      'ownerId': uId,
+      'owner': name,
     });
   }
 
@@ -324,6 +351,8 @@ class _ProfilePageState extends State<ProfilePage> {
   void addItemToList() {
     newCycle = new Cycles(
         _newBikeNameController.text.toString(),
+        uId,
+        name,
         _newBikeLocationController.text.toString(),
         new GeoPoint(0, 0),
         _newBikeRentController.text.toString());
@@ -522,7 +551,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           color: Color(0xFF2C2C37),
                           child: ListTile(
                             trailing: Container(
-                              width: 60,
+                              width: 50,
                               height: 50,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,

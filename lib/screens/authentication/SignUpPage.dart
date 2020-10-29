@@ -6,38 +6,33 @@ import 'package:toast/toast.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class SignUpPage extends StatefulWidget {
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final databaseReference = Firestore.instance;
 
   String getUId() {
-                        final User user = _auth.currentUser;
-                        final uid = user.uid;
+    final User user = _auth.currentUser;
+    final uid = user.uid;
 
-                        return uid;
-                      }
-
+    return uid;
+  }
 
   void updateData(String email, String name) {
-  try {
-    databaseReference
-        .collection('users')
-        .document(getUId())
-        .updateData({
-          'email': email,
-          'name': name,
-        });
-  } catch (e) {
-    print(e.toString());
+    try {
+      databaseReference.collection('users').document(getUId()).updateData({
+        'email': email,
+        'name': name,
+        'isLender': false,
+      });
+    } catch (e) {
+      print(e.toString());
+    }
   }
-}
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   TextEditingController nameController = new TextEditingController();
@@ -184,7 +179,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 margin: EdgeInsets.fromLTRB(25, 160, 25, 20),
                 child: FlatButton(
                   onPressed: () {
-
                     _email = emailController.text.toString();
                     _name = nameController.text.toString();
 
@@ -201,7 +195,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     //   'email': this._email,
                     //   'name': this._name
                     // };
-                    //crudObj.addData(userData); 
+                    //crudObj.addData(userData);
                     // obj.storeNewUSer(user,context);
 
                     return Navigator.push(context,

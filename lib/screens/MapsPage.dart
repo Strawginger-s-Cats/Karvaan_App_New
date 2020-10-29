@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocation/geolocation.dart';
+import 'package:karvaan/models/Cycles.dart';
 import 'package:karvaan/screens/ChatPage.dart';
 import 'package:karvaan/screens/services/authentication.dart';
 import 'package:karvaan/screens/sideNav/profile/ProfilePage.dart';
@@ -19,10 +21,12 @@ class MapsPage extends StatefulWidget {
 
 class _MapsPageState extends State<MapsPage> {
   LatLng current_location, refresh_location;
+  List<Cycles> availableCycles = <Cycles>[];
 
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    getUserBikesFromFirebase();
     super.initState();
   }
 
@@ -91,6 +95,33 @@ class _MapsPageState extends State<MapsPage> {
     });
   }
 
+  Future getUserBikesFromFirebase() async {
+    FirebaseFirestore.instance
+        .collection('availableBikes')
+        .snapshots()
+        .listen((querySnapshot) {
+      setState(() {
+        querySnapshot.docs.forEach((doc) {
+          String name = doc["name"];
+          String rent = doc["pricePerHr"];
+          String location = doc["location"];
+          GeoPoint coords = doc["coordinates"];
+          String ownerId = doc["ownerId"];
+          String owner = doc["owner"];
+          Cycles cycle = Cycles(
+            name,
+            ownerId,
+            owner,
+            location,
+            coords,
+            rent,
+          );
+          availableCycles.add(cycle);
+        });
+      });
+    });
+  }
+
   buildMap() {
     //build the map with the current location of the user
     getLocation().then((response) {
@@ -101,7 +132,9 @@ class _MapsPageState extends State<MapsPage> {
             15.0);
         current_location =
             new LatLng(response.location.latitude, response.location.longitude);
-        refresh_location = current_location;
+        setState(() {
+          refresh_location = current_location;
+        });
         // });
         print(current_location);
       }
@@ -259,7 +292,7 @@ class _MapsPageState extends State<MapsPage> {
                   padding: const EdgeInsets.all(10.0),
                   child: ListView.builder(
                     controller: scrollController,
-                    itemCount: 10,
+                    itemCount: availableCycles.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Card(
                         shape: RoundedRectangleBorder(
@@ -284,7 +317,7 @@ class _MapsPageState extends State<MapsPage> {
                                     SizedBox(
                                       width: 5,
                                     ),
-                                    Text("17",
+                                    Text(availableCycles[index].pricePerHr,
                                         style: TextStyle(
                                             fontSize: 24,
                                             fontFamily: "Montserrat Bold",
@@ -319,7 +352,7 @@ class _MapsPageState extends State<MapsPage> {
                             ),
                           ),
                           title: Text(
-                            'Bike Name',
+                            availableCycles[index].name,
                             style: TextStyle(
                                 fontSize: 18,
                                 fontFamily: "Montserrat Medium",
@@ -354,7 +387,7 @@ class _MapsPageState extends State<MapsPage> {
                                 height: 8,
                               ),
                               Text(
-                                'Anushree Rangbaaz',
+                                availableCycles[index].owner,
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontFamily: "Montserrat Regular",
@@ -417,6 +450,8 @@ class _MapsPageState extends State<MapsPage> {
                     ),
                     onPressed: () {
                       setState(() {
+                        availableCycles.clear();
+                        getUserBikesFromFirebase();
                         refresh_location = current_location;
                       });
                     },

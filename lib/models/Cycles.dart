@@ -5,6 +5,9 @@ class Cycles {
   String location;
   String pricePerHr;
   GeoPoint coordinates;
+  String ownerId;
+  String owner;
 
-  Cycles(this.name, this.location, this.coordinates, this.pricePerHr);
+  Cycles(this.name, this.ownerId, this.owner, this.location, this.coordinates,
+      this.pricePerHr);
 }
