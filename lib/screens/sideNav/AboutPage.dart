@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:karvaan/screens/MapsPage.dart';
-import 'package:karvaan/screens/sideNav/profile/ProfilePage.dart';
+import 'package:karvaan/screens/sideNav/profile/Dashboard.dart';
 
 class About extends StatefulWidget {
   @override

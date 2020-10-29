@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:karvaan/screens/MapsPage.dart';
 import 'package:toast/toast.dart';
 
 class ChatPage extends StatefulWidget {
@@ -50,6 +51,257 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     messagesDropDownList = buildDropDownMenuItems(messages);
     super.initState();
+  }
+
+  Future<int> createConfirmationDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Color(0xFFFFF7C6),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 120,
+                height: 135,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Confirm Booking",
+                            style: TextStyle(
+                                fontFamily: "Montserrat Bold",
+                                fontSize: 20,
+                                color: Color(0xFF1E1E29)),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: 40, top: 0, right: 40, bottom: 0),
+                        child: Divider(
+                          thickness: 1,
+                          color: Color(0xFFFFC495),
+                          height: 15.0,
+                          indent: 5.0,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Text(
+                                "Do you want to confirm this ride and go to payments?",
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.visible,
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontFamily: "Montserrat SemiBold",
+                                    color: Color(0xFF1E1E29))),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            height: 30,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Color(0xFF1E1E29),
+                            ),
+                            child: FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Center(
+                                child: Text(
+                                  "No",
+                                  style: TextStyle(
+                                      color: Color(0xFFE5E5E5),
+                                      fontSize: 14,
+                                      fontFamily: 'Montserrat Bold'),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 30,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Color(0xFF1E1E29),
+                            ),
+                            child: FlatButton(
+                              onPressed: () async {
+                                // navigate to payments
+                                Navigator.of(context).pop();
+                              },
+                              child: Center(
+                                child: Text(
+                                  "Yes",
+                                  style: TextStyle(
+                                      color: Color(0xFFE5E5E5),
+                                      fontSize: 14,
+                                      fontFamily: 'Montserrat Bold'),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Future<int> createCancelationDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Color(0xFFFFF7C6),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 120,
+                height: 135,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Cancel",
+                            style: TextStyle(
+                                fontFamily: "Montserrat Bold",
+                                fontSize: 20,
+                                color: Color(0xFF1E1E29)),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: 60, top: 0, right: 60, bottom: 0),
+                        child: Divider(
+                          thickness: 1,
+                          color: Color(0xFFFFC495),
+                          height: 15.0,
+                          indent: 5.0,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Text(
+                                "Are You Sure? You won't be able to chat after this!",
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.visible,
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontFamily: "Montserrat SemiBold",
+                                    color: Color(0xFF1E1E29))),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            height: 30,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Color(0xFF1E1E29),
+                            ),
+                            child: FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Center(
+                                child: Text(
+                                  "No",
+                                  style: TextStyle(
+                                      color: Color(0xFFE5E5E5),
+                                      fontSize: 14,
+                                      fontFamily: 'Montserrat Bold'),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 30,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Color(0xFF1E1E29),
+                            ),
+                            child: FlatButton(
+                              onPressed: () async {
+                                clearChat();
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MapsPage()),
+                                  ModalRoute.withName('/MapsPage'),
+                                );
+                              },
+                              child: Center(
+                                child: Text(
+                                  "Yes",
+                                  style: TextStyle(
+                                      color: Color(0xFFE5E5E5),
+                                      fontSize: 14,
+                                      fontFamily: 'Montserrat Bold'),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Future<void> clearChat() {
+    return null;
+    ////function to delete chat history and document from firestore
   }
 
   List<DropdownMenuItem<Message>> buildDropDownMenuItems(messages) {
@@ -120,8 +372,7 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                           child: FlatButton(
                             onPressed: () {
-                              Toast.show("Incomplete!", context,
-                                  duration: Toast.LENGTH_SHORT);
+                              createConfirmationDialog(context);
                             },
                             child: Center(
                               child: Text(
@@ -147,6 +398,7 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                           child: FlatButton(
                             onPressed: () {
+                              createCancelationDialog(context);
                               Toast.show("Incomplete!", context,
                                   duration: Toast.LENGTH_SHORT);
                             },

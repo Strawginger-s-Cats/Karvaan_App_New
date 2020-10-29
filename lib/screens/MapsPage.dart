@@ -8,8 +8,11 @@ import 'package:geolocation/geolocation.dart';
 import 'package:karvaan/models/Cycles.dart';
 import 'package:karvaan/screens/ChatPage.dart';
 import 'package:karvaan/screens/services/authentication.dart';
-import 'package:karvaan/screens/sideNav/profile/ProfilePage.dart';
+import 'package:karvaan/screens/sideNav/AboutPage.dart';
+import 'package:karvaan/screens/sideNav/RequestPage.dart';
+import 'package:karvaan/screens/sideNav/profile/Dashboard.dart';
 import 'package:latlong/latlong.dart';
+import 'package:shimmer/shimmer.dart';
 import '../Presentation/menu_icon_icons.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -427,7 +430,38 @@ class _MapsPageState extends State<MapsPage> {
                 height: 200,
                 margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: DrawerHeader(
-                  child: Text(''),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 130,
+                          width: 130,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                            image: AssetImage('assets/images/icon.png'),
+                            fit: BoxFit.fill,
+                          )),
+                        ),
+                        SizedBox(
+                          height: 3,
+                        ),
+                        Shimmer.fromColors(
+                          baseColor: Color(0xFF1E1E29),
+                          highlightColor: Color(0xFFFFF7C6),
+                          child: Text(
+                            "KARVAAN",
+                            style: TextStyle(
+                              fontFamily: 'Montserrat Bold',
+                              color: Color(0xFF1E1E29),
+                              fontSize: 18,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(17),
@@ -442,11 +476,11 @@ class _MapsPageState extends State<MapsPage> {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.account_circle,
+                  MdiIcons.viewDashboard,
                   color: Color(0xFFFFC495),
                 ),
                 title: Text(
-                  'Profile',
+                  'Dashboard',
                   style: TextStyle(
                       fontFamily: 'Montserrat SemiBold',
                       color: Color(0xFFFFC495)),
@@ -454,6 +488,34 @@ class _MapsPageState extends State<MapsPage> {
                 onTap: () {
                   return Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ProfilePage()));
+                },
+              ),
+              Divider(
+                // thickness: 1,
+                color: Color(0xFFFFC495),
+              ),
+              ListTile(
+                leading: Icon(
+                  MdiIcons.bell,
+                  color: Color(0xFFFFC495),
+                ),
+                title: Text(
+                  'Requests',
+                  style: TextStyle(
+                      fontFamily: 'Montserrat SemiBold',
+                      color: Color(0xFFFFC495)),
+                ),
+                onTap: () {
+                  bool isLender = true;
+                  if (isLender) {
+                    return Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => RequestPage()));
+                  } else {
+                    Toast.show("You have not added any bike!", context,
+                        duration: Toast.LENGTH_SHORT);
+                  }
+                  // rent requests
+                  // ...
                 },
               ),
               Divider(
@@ -474,7 +536,7 @@ class _MapsPageState extends State<MapsPage> {
                 onTap: () {
                   Toast.show("Incomplete!", context,
                       duration: Toast.LENGTH_SHORT);
-                  // Update the state of the app.
+                  // app settings
                   // ...
                 },
               ),
@@ -484,7 +546,27 @@ class _MapsPageState extends State<MapsPage> {
               ),
               ListTile(
                 leading: Icon(
-                  MdiIcons.bike,
+                  MdiIcons.information,
+                  color: Color(0xFFFFC495),
+                ),
+                title: Text(
+                  'About Page',
+                  style: TextStyle(
+                      fontFamily: 'Montserrat SemiBold',
+                      color: Color(0xFFFFC495)),
+                ),
+                onTap: () {
+                  return Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => About()));
+                },
+              ),
+              Divider(
+                // thickness: 1,
+                color: Color(0xFFFFC495),
+              ),
+              ListTile(
+                leading: Icon(
+                  MdiIcons.logout,
                   color: Color(0xFFFFC495),
                 ),
                 title: Text(
@@ -495,26 +577,6 @@ class _MapsPageState extends State<MapsPage> {
                 ),
                 onTap: () {
                   AuthService().signOut();
-                },
-              ),
-              Divider(
-                // thickness: 1,
-                color: Color(0xFFFFC495),
-              ),
-              ListTile(
-                leading: Icon(
-                  MdiIcons.alertBox,
-                  color: Color(0xFFFFC495),
-                ),
-                title: Text(
-                  'About',
-                  style: TextStyle(
-                      fontFamily: 'Montserrat SemiBold',
-                      color: Color(0xFFFFC495)),
-                ),
-                onTap: () {
-                  Toast.show("Incomplete!", context,
-                      duration: Toast.LENGTH_SHORT);
                 },
               ),
             ],
