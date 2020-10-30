@@ -7,6 +7,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocation/geolocation.dart';
 import 'package:karvaan/models/Cycles.dart';
 import 'package:karvaan/screens/ChatPage.dart';
+import 'package:karvaan/screens/enterPrice.dart';
 import 'package:karvaan/screens/services/authentication.dart';
 import 'package:karvaan/screens/sideNav/AboutPage.dart';
 import 'package:karvaan/screens/sideNav/BookingHistory.dart';
@@ -733,6 +734,32 @@ class _MapsPageState extends State<MapsPage> {
                 thickness: 1,
                 color: Color(0xFF282833),
               ),
+              /* &&&&&&   Added a test list tile for enterPrice page &&&&&&&&&&&&&&&&&*/
+              ListTile(
+                leading: Icon(
+                  Icons.monetization_on,
+                  color: Color(0xFFFFC495),
+                ),
+                title: Text(
+                  'Test Price page',
+                  style: TextStyle(
+                      fontFamily: 'Montserrat SemiBold',
+                      color: Color(0xFFFFC495)),
+                ),
+                onTap: () {
+                  return Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => enterPrice()));
+                  // app settings
+                  // ...
+                },
+              ),
+              Divider(
+                thickness: 1,
+                color: Color(0xFF282833),
+              ),
+              /* &&&&&&&&&&&&&&&&&&&&& Test list tile ends here &&&&&&&&&&&&&& */
               ListTile(
                 leading: Icon(
                   MdiIcons.logout,

@@ -15,7 +15,7 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  String uId, name = "Error!", phone = 'Error!', email = "Error!";
+  String uId, name = "", phone = '', email = "";
   String _imageUrl;
   bool isLoading = false;
   User user;
@@ -53,8 +53,9 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
     _emailController = TextEditingController(text: email);
     _usernameController = TextEditingController(text: name);
-    var ref = FirebaseStorage.instance.ref().child('users/' + uId + '/profile.png');
-      ref.getDownloadURL().then((loc) => setState(() => _imageUrl = loc));
+    var ref =
+        FirebaseStorage.instance.ref().child('users/' + uId + '/profile.png');
+    ref.getDownloadURL().then((loc) => setState(() => _imageUrl = loc));
   }
 
   @override
@@ -119,8 +120,10 @@ class _EditProfileState extends State<EditProfile> {
                         fit: BoxFit.cover,
                         // image: NetworkImage(
                         //     'https://googleflutter.com/sample_image.jpg'),
-                        image: _imageUrl == null ? NetworkImage('https://firebasestorage.googleapis.com/v0/b/karvaan-app-15704.appspot.com/o/users%2Fdownload%20(1).png?alt=media&token=4337d9ee-45dd-4993-a794-ca4a70d7b911')
-                                        :NetworkImage(_imageUrl),
+                        image: _imageUrl == null
+                            ? NetworkImage(
+                                'https://firebasestorage.googleapis.com/v0/b/karvaan-app-15704.appspot.com/o/users%2Fdownload%20(1).png?alt=media&token=4337d9ee-45dd-4993-a794-ca4a70d7b911')
+                            : NetworkImage(_imageUrl),
                       ),
                     ),
                   ),
@@ -287,16 +290,23 @@ class _EditProfileState extends State<EditProfile> {
   Widget _editEmailTextField() {
     //specifically for email edit.....
     if (_isEditingText)
-      return Center(
-        child: TextField(
-          onSubmitted: (newValue) {
-            setState(() {
-              email = newValue;
-              _isEditingText = false;
-            });
-          },
-          autofocus: true,
-          controller: _emailController,
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Center(
+          child: TextField(
+            style: TextStyle(
+              color: Color(0xFFE5E5E5),
+              fontFamily: 'Montserrat Regular',
+            ),
+            onSubmitted: (newValue) {
+              setState(() {
+                email = newValue;
+                _isEditingText = false;
+              });
+            },
+            autofocus: true,
+            controller: _emailController,
+          ),
         ),
       );
     return InkWell(
@@ -327,6 +337,11 @@ class _EditProfileState extends State<EditProfile> {
     if (_isEditingUser)
       return Center(
         child: TextField(
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Color(0xFFFFC495),
+            fontFamily: 'Montserrat Regular',
+          ),
           onSubmitted: (newValue) {
             setState(() {
               name = newValue;
