@@ -509,14 +509,24 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(children: <Widget>[
               Container(
                 margin: EdgeInsets.all(30),
-                width: 200,
-                height: 200,
+                width: 160,
+                height: 160,
                 decoration: BoxDecoration(
+                  border: Border.all(
+                          width: 4,
+                          color: Theme.of(context).scaffoldBackgroundColor),
+                  boxShadow: [
+                        BoxShadow(
+                            spreadRadius: 2,
+                            blurRadius: 10,
+                            color: Colors.black.withOpacity(0.1),
+                            offset: Offset(0, 10))
+                      ],
                   shape: BoxShape.circle,
                   image: DecorationImage(
                       // image: NetworkImage(
                       //     'https://googleflutter.com/sample_image.jpg'),
-                      image: _imageUrl == null ? NetworkImage('https://googleflutter.com/sample_image.jpg')
+                      image: _imageUrl == null ? NetworkImage('https://firebasestorage.googleapis.com/v0/b/karvaan-app-15704.appspot.com/o/users%2Fdownload.png?alt=media&token=af81a1c6-7748-40e7-8fa3-29427a56de7b')
                                         :NetworkImage(_imageUrl),
                       fit: BoxFit.fill),
                 ),
