@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:karvaan/models/Cycles.dart';
 import 'package:karvaan/screens/ChatListPage.dart';
 import 'package:karvaan/screens/ChatPage.dart';
+import 'package:karvaan/screens/sideNav/profile/EditProfile.dart';
 import 'package:latlong/latlong.dart';
 import 'package:karvaan/screens/MapsPageRenter.dart';
 import 'package:karvaan/screens/sideNav/RequestPage.dart';
@@ -499,7 +500,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: FloatingActionButton(
                           heroTag: "btn1",
                           backgroundColor: Color(0xFFCA9367),
-                          onPressed: () {},
+                          onPressed: () {
+                            return Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditProfile(uId)));
+                          },
                           child: Icon(
                             Icons.edit,
                             size: 30,
