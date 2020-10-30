@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:toast/toast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:location/location.dart' as loc;
 
 class MapsPage extends StatefulWidget {
   @override
@@ -134,7 +135,7 @@ class _MapsPageState extends State<MapsPage> {
           String name = doc["name"];
           String rent = doc["pricePerHr"];
           String location = doc["location"];
-          GeoPoint coords = doc["coordinates"];
+          GeoPoint coords = null;
           String ownerId = doc["ownerId"];
           String owner = doc["owner"];
           Cycles cycle = Cycles(
@@ -374,14 +375,32 @@ class _MapsPageState extends State<MapsPage> {
             .where("onRent", isEqualTo: false)
             .snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return Text('Loading maps..Please Wait');
+          if (!snapshot.hasData)
+            return FlutterMap(
+              mapController: controller,
+              options: new MapOptions(
+                center: buildMap(),
+                zoom: 13.4,
+              ),
+              layers: [
+                new TileLayerOptions(
+                    urlTemplate:
+                        'https://api.mapbox.com/styles/v1/vibhanshuv/ckg9buo07066e19o9xjy4w9f3/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoidmliaGFuc2h1diIsImEiOiJja2c5MjltZ2IwajZnMndvMzhnZmNmcng1In0.1pJL10lwpPsJCuN4Yh6TDg',
+                    additionalOptions: {
+                      'accessToken':
+                          "pk.eyJ1IjoidmliaGFuc2h1diIsImEiOiJja2c5MjltZ2IwajZnMndvMzhnZmNmcng1In0.1pJL10lwpPsJCuN4Yh6TDg",
+                      'id': 'mapbox.mapbox-streets-v8'
+                    }),
+                new MarkerLayerOptions(markers: allMarkers)
+              ],
+            );
           for (int i = 0; i < snapshot.data.documents.length; i++) {
             allMarkers.add(new Marker(
                 width: 30,
                 height: 30,
                 point: new LatLng(
-                  snapshot.data.documents[i]['coordinates'].latitude,
-                  snapshot.data.documents[i]['coordinates'].longitude,
+                  snapshot.data.documents[i]['position']['geopoint'].latitude,
+                  snapshot.data.documents[i]['position']['geopoint'].longitude,
                 ),
                 builder: (context) => new Container(
                       child: IconButton(
@@ -391,10 +410,8 @@ class _MapsPageState extends State<MapsPage> {
                         ),
                         iconSize: 30,
                         onPressed: () {
-                          GeoPoint loc = new GeoPoint(
-                            snapshot.data.documents[i]['coordinates'].latitude,
-                            snapshot.data.documents[i]['coordinates'].longitude,
-                          );
+                          GeoPoint loc = snapshot.data.documents[i]['position']
+                              ['geopoint'];
                           Cycles _thisCycle = new Cycles(
                             snapshot.data.documents[i]["name"],
                             snapshot.data.documents[i]["ownerId"],
@@ -740,19 +757,56 @@ class _MapsPageState extends State<MapsPage> {
         builder: (context) => Stack(children: <Widget>[
           loadMap(),
           DraggableScrollableSheet(
-            initialChildSize: 0.20,
+            initialChildSize: 0.30,
             maxChildSize: 0.5,
-            minChildSize: 0.16,
+            minChildSize: 0.30,
             builder: (BuildContext context, ScrollController scrollController) {
-              return Container(
-                // color: Color(0xFF1E1E29),
-                child: displayAvailableBikes(scrollController),
-                decoration: BoxDecoration(
-                    color: Color(0xFF1E1E29),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                    )),
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          MdiIcons.crosshairsGps,
+                          color: Color(0xFFFFC495),
+                          size: 45,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            availableCycles.clear();
+                            getUserBikesFromFirebase();
+                            refresh_location = current_location;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        width: 30,
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Align(
+                      alignment: Alignment.topCenter,
+                      child: Icon(
+                        MdiIcons.chevronUp,
+                        color: Color(0xFFFFF7C6),
+                      )),
+                  Expanded(
+                    child: Container(
+                      // color: Color(0xFF1E1E29),
+                      child: displayAvailableBikes(scrollController),
+                      decoration: BoxDecoration(
+                          color: Color(0xFF1E1E29),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30),
+                          )),
+                    ),
+                  ),
+                ],
               );
             },
           ),
@@ -775,24 +829,6 @@ class _MapsPageState extends State<MapsPage> {
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
                     },
-                  ),
-                  Spacer(),
-                  IconButton(
-                    icon: Icon(
-                      MdiIcons.crosshairsGps,
-                      color: Color(0xFFFFC495),
-                      size: 40,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        availableCycles.clear();
-                        getUserBikesFromFirebase();
-                        refresh_location = current_location;
-                      });
-                    },
-                  ),
-                  SizedBox(
-                    width: 10,
                   ),
                 ],
               ),

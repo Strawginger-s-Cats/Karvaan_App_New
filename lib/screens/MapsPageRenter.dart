@@ -96,7 +96,7 @@ class _MapsPageRenterState extends State<MapsPageRenter> {
                     ),
                   )),
         );
-        print("LOCATION: " + current_location.toString());
+        print("CURRENT LOCATION: " + current_location.toString());
       }
     });
   }
@@ -196,7 +196,7 @@ class _MapsPageRenterState extends State<MapsPageRenter> {
                         child: Icon(
                           MdiIcons.crosshairsGps,
                           color: Color(0xFFFFC495),
-                          size: 55,
+                          size: 45,
                         ),
                       ),
                     ),

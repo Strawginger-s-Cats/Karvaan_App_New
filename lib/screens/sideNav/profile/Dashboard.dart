@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:karvaan/models/Cycles.dart';
 import 'package:karvaan/screens/ChatListPage.dart';
@@ -36,6 +37,8 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController _newBikeLocationController =
       new TextEditingController();
   bool isSwitched = false;
+
+  Geoflutterfire geo = new Geoflutterfire();
 
   getUserId() {
     FirebaseAuth auth = FirebaseAuth.instance;
@@ -93,19 +96,20 @@ class _ProfilePageState extends State<ProfilePage> {
     getUserBikesFromFirebase();
     print(allCycles);
     super.initState();
-    var ref = FirebaseStorage.instance.ref().child('users/' + uId + '/profile.png');
-      ref.getDownloadURL().then((loc) => setState(() => _imageUrl = loc));
+    var ref =
+        FirebaseStorage.instance.ref().child('users/' + uId + '/profile.png');
+    ref.getDownloadURL().then((loc) => setState(() => _imageUrl = loc));
   }
 
   Future<void> deleteBike(String name) {
-    Firestore.instance //adding new bike document
+    FirebaseFirestore.instance //adding new bike document
         .collection('users')
         .doc(uId)
         .collection("lenderBikes")
         .doc(name)
         .delete();
 
-    Firestore.instance //adding new availble bike document
+    FirebaseFirestore.instance //adding new availble bike document
         .collection('availableBikes')
         .doc(name)
         .delete();
@@ -117,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
     var addresses = await Geocoder.local.findAddressesFromQuery(query);
     var first = addresses.first;
 
-    Firestore.instance //adding new lender bike document
+    FirebaseFirestore.instance //adding new lender bike document
         .collection('users')
         .doc(uId)
         .collection("lenderBikes")
@@ -132,17 +136,19 @@ class _ProfilePageState extends State<ProfilePage> {
       'owner': name,
     });
 
-    Firestore.instance //adding new bike document
+    FirebaseFirestore.instance //adding new bike document
         .collection('users')
         .doc(uId)
         .update({'isLender': true}).then((value) => print("Updated"));
 
-    Firestore.instance //adding new availble bike document
+    GeoFirePoint point = geo.point(
+        latitude: first.coordinates.latitude,
+        longitude: first.coordinates.longitude);
+    FirebaseFirestore.instance //adding new availble bike document
         .collection('availableBikes')
         .doc(newCycle.name)
         .set({
-      'coordinates':
-          new GeoPoint(first.coordinates.latitude, first.coordinates.longitude),
+      'position': point.data,
       'location': newCycle.location,
       'pricePerHr': newCycle.pricePerHr,
       'name': newCycle.name,
@@ -513,21 +519,23 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 160,
                 decoration: BoxDecoration(
                   border: Border.all(
-                          width: 4,
-                          color: Theme.of(context).scaffoldBackgroundColor),
+                      width: 4,
+                      color: Theme.of(context).scaffoldBackgroundColor),
                   boxShadow: [
-                        BoxShadow(
-                            spreadRadius: 2,
-                            blurRadius: 10,
-                            color: Colors.black.withOpacity(0.1),
-                            offset: Offset(0, 10))
-                      ],
+                    BoxShadow(
+                        spreadRadius: 2,
+                        blurRadius: 10,
+                        color: Colors.black.withOpacity(0.1),
+                        offset: Offset(0, 10))
+                  ],
                   shape: BoxShape.circle,
                   image: DecorationImage(
                       // image: NetworkImage(
                       //     'https://googleflutter.com/sample_image.jpg'),
-                      image: _imageUrl == null ? NetworkImage('https://firebasestorage.googleapis.com/v0/b/karvaan-app-15704.appspot.com/o/users%2Fdownload%20(1).png?alt=media&token=4337d9ee-45dd-4993-a794-ca4a70d7b911')
-                                        :NetworkImage(_imageUrl),
+                      image: _imageUrl == null
+                          ? NetworkImage(
+                              'https://firebasestorage.googleapis.com/v0/b/karvaan-app-15704.appspot.com/o/users%2Fdownload%20(1).png?alt=media&token=4337d9ee-45dd-4993-a794-ca4a70d7b911')
+                          : NetworkImage(_imageUrl),
                       fit: BoxFit.fill),
                 ),
               ),
