@@ -15,24 +15,42 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  String uId, name, phone , email;
+  String uId, name, phone, email;
+  String chatId = "ab";
+
+  List<MessageTile> chatTileMessages = <MessageTile>[];
 
   //List<String> arr = ['Hi', 'Vibhanshu'];
 
   Stream chatMessageStream;
-  
-  Widget chatMessageList(){
+
+  @override
+  void initState() {
+    getUserId();
+    getUserInfo();
+    getConversationMessages(chatId).then((value) {
+      setState(() {
+        chatMessageStream = value;
+      });
+    });
+    super.initState();
+  }
+
+  Widget chatMessageList() {
     return StreamBuilder(
       stream: chatMessageStream,
-      builder: (context,snapshot){
-        return snapshot.hasData ? ListView.builder(
-          itemCount: snapshot.data.documents.length,
-          itemBuilder: (context,index){
-            return MessageTile(snapshot.data.documents[index].data["message"],
-            snapshot.data.documents[index].data["sendBy"]== name);
-          }) : Container();
+      builder: (context, snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) {
+                  return MessageTile(
+                      snapshot.data.documents[index].data()["message"],
+                      snapshot.data.documents[index].data()["sendBy"] == name);
+                })
+            : Container();
       },
-      );
+    );
   }
 
   TextEditingController _chatBoxController = new TextEditingController();
@@ -60,45 +78,36 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  String chatId = "bc";
-
   sendMessage() {
-
-    if(_chatBoxController.text.isNotEmpty){
+    if (_chatBoxController.text.isNotEmpty) {
       //getUserInfo();
-                Map<String,dynamic> messageMap = {
-                  "sendBy" : name,
-                  "message" : _chatBoxController.text.toString(),
-                  "time": DateTime.now().microsecondsSinceEpoch,
+      Map<String, dynamic> messageMap = {
+        "sendBy": name,
+        "message": _chatBoxController.text.toString(),
+        "time": DateTime.now().microsecondsSinceEpoch,
       };
-      addConversationMessages(chatId,messageMap);
+      addConversationMessages(chatId, messageMap);
     }
   }
 
-  addConversationMessages(String chatId, messageMap){
-    Firestore.instance.collection("chats")
-    .document(chatId)
-    .collection("ChatPage")
-    .add(messageMap).catchError((e) {print(e.toString());});
-  }
-
-  getConversationMessages(String chatId) async{
-    return await Firestore.instance.collection("chats")
-    .document(chatId)
-    .collection("ChatPage")
-    .orderBy("time",descending: false)
-    .snapshots();
-  }
-
-  @override
-  void initState(){
-    getUserInfo();
-    getConversationMessages(chatId).then((value){
-      setState(() {
-        chatMessageStream = value;
-      });
+  addConversationMessages(String chatId, messageMap) {
+    Firestore.instance
+        .collection("chats")
+        .document(chatId)
+        .collection("ChatPage")
+        .add(messageMap)
+        .catchError((e) {
+      print(e.toString());
     });
-    super.initState();
+  }
+
+  getConversationMessages(String chatId) async {
+    return await Firestore.instance
+        .collection("chats")
+        .document(chatId)
+        .collection("ChatPage")
+        .orderBy("time", descending: false)
+        .snapshots();
   }
 
   Future<int> createConfirmationDialog(BuildContext context) {
@@ -354,7 +363,6 @@ class _ChatPageState extends State<ChatPage> {
     //     .delete();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -391,8 +399,7 @@ class _ChatPageState extends State<ChatPage> {
                   chatMessageList(),
                   Container(
 
-                  //child: ChatMessageList(),
-                  
+                      //child: ChatMessageList(),
 
                       //margin: EdgeInsets.only(top: 0,left: 10),
                       /*
@@ -560,8 +567,6 @@ class MessageTile extends StatelessWidget {
     );
   }
 }
-
-
 
 // class MessageTile extends StatelessWidget {
 //   final String message;
