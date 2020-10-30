@@ -16,6 +16,7 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   String uId, name = "Error!", phone = 'Error!', email = "Error!";
+  String _imageUrl;
   bool isLoading = false;
   User user;
   TextEditingController _emailController;
@@ -52,6 +53,8 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
     _emailController = TextEditingController(text: email);
     _usernameController = TextEditingController(text: name);
+    var ref = FirebaseStorage.instance.ref().child('users/' + uId + '/profile.png');
+      ref.getDownloadURL().then((loc) => setState(() => _imageUrl = loc));
   }
 
   @override
@@ -114,8 +117,10 @@ class _EditProfileState extends State<EditProfile> {
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage(
-                            'https://googleflutter.com/sample_image.jpg'),
+                        // image: NetworkImage(
+                        //     'https://googleflutter.com/sample_image.jpg'),
+                        image: _imageUrl == null ? NetworkImage('https://googleflutter.com/sample_image.jpg')
+                                        :NetworkImage(_imageUrl),
                       ),
                     ),
                   ),

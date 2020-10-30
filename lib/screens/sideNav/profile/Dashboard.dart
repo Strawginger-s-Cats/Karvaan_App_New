@@ -28,6 +28,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String uId, name = "Error!", phone = 'Error!', email = "Error!";
+  String _imageUrl;
   List<Cycles> allCycles = <Cycles>[];
   Cycles newCycle;
   TextEditingController _newBikeNameController = new TextEditingController();
@@ -92,6 +93,8 @@ class _ProfilePageState extends State<ProfilePage> {
     getUserBikesFromFirebase();
     print(allCycles);
     super.initState();
+    var ref = FirebaseStorage.instance.ref().child('users/' + uId + '/profile.png');
+      ref.getDownloadURL().then((loc) => setState(() => _imageUrl = loc));
   }
 
   Future<void> deleteBike(String name) {
@@ -405,8 +408,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: NetworkImage(
-                          'https://googleflutter.com/sample_image.jpg'),
+                      // image: NetworkImage(
+                      //     'https://googleflutter.com/sample_image.jpg'),
+                      image: _imageUrl == null ? NetworkImage('https://googleflutter.com/sample_image.jpg')
+                                        :NetworkImage(_imageUrl),
                       fit: BoxFit.fill),
                 ),
               ),
