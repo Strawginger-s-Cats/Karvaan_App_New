@@ -38,10 +38,15 @@ class _enterPriceState extends State<enterPrice> {
           Padding(
             padding: const EdgeInsets.all(32.0),
             child: TextField(
+              autofocus: true,
+              cursorColor: Color(0xFFFFF7C6),
+              enableInteractiveSelection: true,
+              style: TextStyle(color: Color(0xFFFFF7c6),
+              fontFamily: 'Montserrat Medium'),
               decoration: InputDecoration(
                   hintText: 'Enter the amount',
                   hintStyle: TextStyle(
-                      color: Color(0xFFe5e5e5),
+                      color: Color(0xFF626262),
                       fontFamily: 'Montserrat Regular')),
             ),
           ),
