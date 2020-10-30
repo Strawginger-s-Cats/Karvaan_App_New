@@ -8,16 +8,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatPage extends StatefulWidget {
   final String chatId;
-  ChatPage(this.chatId);
+  final String messageSendorName;
+  ChatPage(this.chatId,this.messageSendorName);
 
   @override
-  _ChatPageState createState() => _ChatPageState(chatId);
+  _ChatPageState createState() => _ChatPageState(chatId,messageSendorName);
 }
 
 class _ChatPageState extends State<ChatPage> {
   String uId, name, phone, email;
   String chatId;
-  _ChatPageState(this.chatId);
+  String messageSendorName;
+  _ChatPageState(this.chatId,this.messageSendorName);
 
   //List<String> arr = ['Hi', 'Vibhanshu'];
 
@@ -373,7 +375,7 @@ class _ChatPageState extends State<ChatPage> {
         ),
         centerTitle: true,
         title: Text(
-          "John Wick",
+          messageSendorName,
           style: TextStyle(
               fontFamily: "Montserrat Bold",
               color: Color(0xFFE5E5E5),
@@ -568,16 +570,3 @@ class MessageTile extends StatelessWidget {
   }
 }
 
-// class MessageTile extends StatelessWidget {
-//   final String message;
-//   MessageTile(this.message);
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       child: Text(message,
-//       style: TextStyle(
-//         color: Color(0xFFE5E5E5),
-//         fontSize:17 ),),
-//     );
-//   }
-// }

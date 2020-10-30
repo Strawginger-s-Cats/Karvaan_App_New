@@ -94,7 +94,7 @@ class _ChatListPageState extends State<ChatListPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              ChatPage(chatListItems[index].chatDoc)));
+                              ChatPage(chatListItems[index].chatDoc,chatListItems[index].name)));
                 },
                 leading: Container(
                   height: 60,
