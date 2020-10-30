@@ -8,6 +8,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  Tween<double> _sizeTween = Tween<double>(begin: 20, end: 150);
   @override
   void initState() {
     Future.delayed(Duration(seconds: 5), () {
@@ -26,14 +27,20 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                height: 150,
-                width: 150,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                  image: AssetImage('assets/images/icon.png'),
-                  fit: BoxFit.fill,
-                )),
+              TweenAnimationBuilder(
+                tween: _sizeTween,
+                duration: Duration(milliseconds: 1000),
+                builder: (_, size, __) {
+                  return Container(
+                    height: size,
+                    width: size,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                      image: AssetImage('assets/images/icon.png'),
+                      fit: BoxFit.fill,
+                    )),
+                  );
+                },
               ),
               SizedBox(
                 height: 3,

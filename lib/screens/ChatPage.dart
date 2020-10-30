@@ -85,6 +85,7 @@ class _ChatPageState extends State<ChatPage> {
         "time": DateTime.now().microsecondsSinceEpoch,
       };
       addConversationMessages(chatId, messageMap);
+      _chatBoxController.text = "";
     }
   }
 
@@ -542,7 +543,7 @@ class MessageTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         decoration: BoxDecoration(
-            color: isSendByMe ? Color(0xFFC495) : Color(0x282833),
+            color: isSendByMe ? Color(0xFFFFC495) : Color(0xFF282833),
             borderRadius: isSendByMe
                 ? BorderRadius.only(
                     topLeft: Radius.circular(23),
