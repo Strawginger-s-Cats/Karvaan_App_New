@@ -63,6 +63,7 @@ class _RequestPageState extends State<RequestPage> {
       'forBike': request.bikeName,
       'chatDoc': uId + request.renterId,
       'contact': request.renterPhone,
+      'id': request.renterId,
     });
 
     Firestore.instance
@@ -102,6 +103,7 @@ class _RequestPageState extends State<RequestPage> {
   @override
   void initState() {
     getUserId();
+    getUserInfo();
     getRentRequestsFromFirebase();
     super.initState();
   }

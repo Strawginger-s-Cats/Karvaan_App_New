@@ -369,6 +369,13 @@ class _ChatPageState extends State<ChatPage> {
         .collection("chatlist")
         .doc(chatInfo.name)
         .delete();
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(chatInfo.id)
+        .collection("chatlist")
+        .doc(chatInfo.name)
+        .delete();
   }
 
   Future<void> changeBikeRentStatus() {
@@ -423,75 +430,64 @@ class _ChatPageState extends State<ChatPage> {
               child: Stack(
                 children: [
                   chatMessageList(),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Row(
+                children: [
                   Container(
-
-                      //child: ChatMessageList(),
-
-                      //margin: EdgeInsets.only(top: 0,left: 10),
-                      /*
-                      This the container which contains all the chats between the users. This has to be kind of like scrollable but
-                      try to find a youtube video for this. There is a better method for this than just using a SingleScrollChild (Also using this
-                      will give an error.:( )
-                     */
-
+                    alignment: Alignment.bottomLeft,
+                    height: 38,
+                    width: 130,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(48),
+                      color: Color(0xFFFFF7C6),
+                    ),
+                    child: FlatButton(
+                      onPressed: () {
+                        createConfirmationDialog(context);
+                      },
+                      child: Center(
+                        child: Text(
+                          "Confirm Booking",
+                          style: TextStyle(
+                              color: Color(0xFF1E1E29),
+                              fontSize: 11,
+                              fontFamily: 'Montserrat SemiBold'),
+                        ),
                       ),
-                  Positioned(
-                    bottom: 0,
-                    left: 10,
-                    child: Row(
-                      children: [
-                        Container(
-                          alignment: Alignment.bottomLeft,
-                          height: 38,
-                          width: 130,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(48),
-                            color: Color(0xFFFFF7C6),
-                          ),
-                          child: FlatButton(
-                            onPressed: () {
-                              createConfirmationDialog(context);
-                            },
-                            child: Center(
-                              child: Text(
-                                "Confirm Booking",
-                                style: TextStyle(
-                                    color: Color(0xFF1E1E29),
-                                    fontSize: 11,
-                                    fontFamily: 'Montserrat SemiBold'),
-                              ),
-                            ),
-                          ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Container(
+                    alignment: Alignment.bottomLeft,
+                    height: 38,
+                    width: 90,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(48),
+                      color: Color(0xFFFFF7C6),
+                    ),
+                    child: FlatButton(
+                      onPressed: () {
+                        createCancelationDialog(context);
+                        Toast.show("Incomplete!", context,
+                            duration: Toast.LENGTH_SHORT);
+                      },
+                      child: Center(
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                              color: Color(0xFF1E1E29),
+                              fontSize: 11,
+                              fontFamily: 'Montserrat SemiBold'),
                         ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Container(
-                          alignment: Alignment.bottomLeft,
-                          height: 38,
-                          width: 90,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(48),
-                            color: Color(0xFFFFF7C6),
-                          ),
-                          child: FlatButton(
-                            onPressed: () {
-                              createCancelationDialog(context);
-                              Toast.show("Incomplete!", context,
-                                  duration: Toast.LENGTH_SHORT);
-                            },
-                            child: Center(
-                              child: Text(
-                                "Cancel",
-                                style: TextStyle(
-                                    color: Color(0xFF1E1E29),
-                                    fontSize: 11,
-                                    fontFamily: 'Montserrat SemiBold'),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],

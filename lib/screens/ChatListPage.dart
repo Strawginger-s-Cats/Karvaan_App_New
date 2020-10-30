@@ -39,8 +39,8 @@ class _ChatListPageState extends State<ChatListPage> {
         .listen((querySnapshot) {
       setState(() {
         querySnapshot.docs.forEach((doc) {
-          ChatItem request = new ChatItem(
-              doc["name"], doc["forBike"], doc["chatDoc"], doc["contact"]);
+          ChatItem request = new ChatItem(doc["name"], doc["forBike"],
+              doc["chatDoc"], doc["contact"], doc["id"]);
           chatListItems.add(request);
         });
       });

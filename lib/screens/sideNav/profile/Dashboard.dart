@@ -398,25 +398,17 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Center(
                 child: Column(children: <Widget>[
-              GestureDetector(
-                child: Container(
-                  margin: EdgeInsets.all(30),
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            'https://googleflutter.com/sample_image.jpg'),
-                        fit: BoxFit.fill),
-                  ),
+              Container(
+                margin: EdgeInsets.all(30),
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      image: NetworkImage(
+                          'https://googleflutter.com/sample_image.jpg'),
+                      fit: BoxFit.fill),
                 ),
-                onTap: () async {
-                  File image =
-                      await ImagePicker.pickImage(source: ImageSource.gallery);
-                  print(image.path);
-                  uploadProfilePicture(image.path.toString());
-                },
               ),
             ])),
 
@@ -730,17 +722,5 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         )));
-  }
-
-  uploadProfilePicture(String imagePath) async {
-    File file = File(imagePath);
-    try {
-      await FirebaseStorage.instance
-          .ref()
-          .child('users/' + uId + '/profile.png')
-          .putFile(file);
-    } on FirebaseException catch (e) {
-      print(e);
-    }
   }
 }
