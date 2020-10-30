@@ -369,7 +369,7 @@ class _MapsPageState extends State<MapsPage> {
 
   Widget loadMap() {
     return StreamBuilder(
-        stream: Firestore.instance
+        stream: FirebaseFirestore.instance
             .collection("availableBikes")
             .where("onRent", isEqualTo: false)
             .snapshots(),
@@ -430,6 +430,152 @@ class _MapsPageState extends State<MapsPage> {
         });
   }
 
+  Widget displayAvailableBikes(ScrollController scrollController) {
+    if (availableCycles.length == 0) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Oops! No Bikes Available.",
+              style: TextStyle(
+                color: Color(0xFFFFC495),
+                fontFamily: "Montserrat SemiBold",
+              ),
+            ),
+            Text(
+              "Please Try Later...",
+              style: TextStyle(
+                color: Color(0xFFFFC495),
+                fontFamily: "Montserrat SemiBold",
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ListView.builder(
+            controller: scrollController,
+            itemCount: availableCycles.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(17)),
+                color: Color(0x001E1E29),
+                child: ListTile(
+                  trailing: Container(
+                    width: 55,
+                    height: 55,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Rs",
+                              style: TextStyle(
+                                  fontSize: 10,
+                                  fontFamily: "Montserrat Regular",
+                                  color: Color(0xFFFFF7C6)),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(availableCycles[index].pricePerHr,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontFamily: "Montserrat Bold",
+                                    color: Color(0xFFFFF7C6)))
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Text("per hr",
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontFamily: "Montserrat Regular",
+                                    color: Color(0xFFFFF7C6))),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  leading: Container(
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      image: DecorationImage(
+                          image: AssetImage('assets/images/profile.png'),
+                          fit: BoxFit.fill),
+                      shape: BoxShape.rectangle,
+                    ),
+                  ),
+                  title: Text(
+                    availableCycles[index].name,
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontFamily: "Montserrat Medium",
+                        color: Color(0xFFFFC495)),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 2,
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            color: Color(0xFFFFC495),
+                            size: 20,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            '0.7km away',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: "Montserrat Regular",
+                                color: Color(0xFFCA9367)),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        availableCycles[index].owner,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: "Montserrat Regular",
+                            color: Color(0xFFCA9367)),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    createConfirmationDialog(context, availableCycles[index]);
+                  },
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -474,6 +620,10 @@ class _MapsPageState extends State<MapsPage> {
               SizedBox(
                 height: 10,
               ),
+              Divider(
+                thickness: 1,
+                color: Color(0xFF282833),
+              ),
               ListTile(
                 leading: Icon(
                   MdiIcons.viewDashboard,
@@ -491,8 +641,8 @@ class _MapsPageState extends State<MapsPage> {
                 },
               ),
               Divider(
-                // thickness: 1,
-                color: Color(0xFFFFC495),
+                thickness: 1,
+                color: Color(0xFF282833),
               ),
               ListTile(
                 leading: Icon(
@@ -519,8 +669,8 @@ class _MapsPageState extends State<MapsPage> {
                 },
               ),
               Divider(
-                // thickness: 1,
-                color: Color(0xFFFFC495),
+                thickness: 1,
+                color: Color(0xFF282833),
               ),
               ListTile(
                 leading: Icon(
@@ -534,15 +684,17 @@ class _MapsPageState extends State<MapsPage> {
                       color: Color(0xFFFFC495)),
                 ),
                 onTap: () {
-                  return Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => BookingHistory()));
+                  return Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BookingHistory()));
                   // app settings
                   // ...
                 },
               ),
               Divider(
-                // thickness: 1,
-                color: Color(0xFFFFC495),
+                thickness: 1,
+                color: Color(0xFF282833),
               ),
               ListTile(
                 leading: Icon(
@@ -561,8 +713,8 @@ class _MapsPageState extends State<MapsPage> {
                 },
               ),
               Divider(
-                // thickness: 1,
-                color: Color(0xFFFFC495),
+                thickness: 1,
+                color: Color(0xFF282833),
               ),
               ListTile(
                 leading: Icon(
@@ -594,125 +746,7 @@ class _MapsPageState extends State<MapsPage> {
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
                 // color: Color(0xFF1E1E29),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: availableCycles.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(17)),
-                        color: Color(0x001E1E29),
-                        child: ListTile(
-                          trailing: Container(
-                            width: 55,
-                            height: 55,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Rs",
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontFamily: "Montserrat Regular",
-                                          color: Color(0xFFFFF7C6)),
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(availableCycles[index].pricePerHr,
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontFamily: "Montserrat Bold",
-                                            color: Color(0xFFFFF7C6)))
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 15,
-                                    ),
-                                    Text("per hr",
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            fontFamily: "Montserrat Regular",
-                                            color: Color(0xFFFFF7C6))),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                          leading: Container(
-                            height: 60,
-                            width: 60,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              image: DecorationImage(
-                                  image:
-                                      AssetImage('assets/images/profile.png'),
-                                  fit: BoxFit.fill),
-                              shape: BoxShape.rectangle,
-                            ),
-                          ),
-                          title: Text(
-                            availableCycles[index].name,
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontFamily: "Montserrat Medium",
-                                color: Color(0xFFFFC495)),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 2,
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: Color(0xFFFFC495),
-                                    size: 20,
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    '0.7km away',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontFamily: "Montserrat Regular",
-                                        color: Color(0xFFCA9367)),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Text(
-                                availableCycles[index].owner,
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontFamily: "Montserrat Regular",
-                                    color: Color(0xFFCA9367)),
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            createConfirmationDialog(
-                                context, availableCycles[index]);
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                child: displayAvailableBikes(scrollController),
                 decoration: BoxDecoration(
                     color: Color(0xFF1E1E29),
                     borderRadius: BorderRadius.only(

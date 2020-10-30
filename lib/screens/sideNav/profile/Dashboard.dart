@@ -371,6 +371,112 @@ class _ProfilePageState extends State<ProfilePage> {
         _newBikeRentController.text.toString());
   }
 
+  Widget displayBikeList() {
+    if (allCycles.length == 0) {
+      return Center(
+        child: Text(
+          "You have not added any cycle!",
+          style: TextStyle(
+            color: Color(0xFFFFC495),
+            fontFamily: "Montserrat SemiBold",
+          ),
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: allCycles.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(17)),
+                color: Color(0xFF2C2C37),
+                child: ListTile(
+                  trailing: Container(
+                    width: 50,
+                    height: 50,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: 2,
+                            ),
+                            IconButton(
+                              icon:
+                                  Icon(Icons.delete, color: Color(0xFFFFC495)),
+                              onPressed: () {
+                                deleteBike(allCycles[index].name);
+                                setState(() {
+                                  allCycles.clear();
+                                });
+                              },
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  leading: Container(
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      image: DecorationImage(
+                          image: AssetImage('assets/images/icon.png'),
+                          fit: BoxFit.fill),
+                      shape: BoxShape.rectangle,
+                    ),
+                  ),
+                  title: Text(
+                    '${allCycles[index].name}',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontFamily: "Montserrat Medium",
+                        color: Color(0xFFFFC495)),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 2,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            '${allCycles[index].location}',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: "Montserrat Regular",
+                                color: Color(0xFFCA9367)),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        'Rs. ${allCycles[index].pricePerHr} per hr.',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: "Montserrat Regular",
+                            color: Color(0xFFCA9367)),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -540,7 +646,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ),
-
             //Here begins the second card,displaying a person's cycles....
             Container(
               decoration: BoxDecoration(
@@ -622,97 +727,7 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(
               height: 400,
               child: Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: allCycles.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(17)),
-                          color: Color(0xFF2C2C37),
-                          child: ListTile(
-                            trailing: Container(
-                              width: 50,
-                              height: 50,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        height: 2,
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons.delete,
-                                            color: Color(0xFFFFC495)),
-                                        onPressed: () {
-                                          deleteBike(allCycles[index].name);
-                                          setState(() {
-                                            allCycles.clear();
-                                          });
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            leading: Container(
-                              height: 60,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                image: DecorationImage(
-                                    image: AssetImage('assets/images/icon.png'),
-                                    fit: BoxFit.fill),
-                                shape: BoxShape.rectangle,
-                              ),
-                            ),
-                            title: Text(
-                              '${allCycles[index].name}',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: "Montserrat Medium",
-                                  color: Color(0xFFFFC495)),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  height: 2,
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      '${allCycles[index].location}',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: "Montserrat Regular",
-                                          color: Color(0xFFCA9367)),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                Text(
-                                  'Rs. ${allCycles[index].pricePerHr} per hr.',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontFamily: "Montserrat Regular",
-                                      color: Color(0xFFCA9367)),
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                ),
+                child: displayBikeList(),
               ),
             ),
 

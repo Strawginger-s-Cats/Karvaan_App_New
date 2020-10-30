@@ -47,39 +47,19 @@ class _ChatListPageState extends State<ChatListPage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF2C2C37),
-      appBar: AppBar(
-        title: Text(
-          "Chats",
+  Widget displayContent() {
+    if (chatListItems.length == 0) {
+      return Center(
+        child: Text(
+          "You have no chats!",
           style: TextStyle(
-              fontFamily: "Montserrat Bold",
-              color: Color(0xFF2C2C37),
-              fontSize: 18),
-        ),
-        backgroundColor: Color(0xFFFFC495),
-        actions: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            child: IconButton(
-              icon: Icon(
-                Icons.search,
-                color: Color(0xFF2C2C37),
-              ),
-              onPressed: () {
-                Toast.show("Incomplete!", context,
-                    duration: Toast.LENGTH_SHORT);
-              },
-            ),
+            color: Color(0xFFFFC495),
+            fontFamily: "Montserrat SemiBold",
           ),
-          SizedBox(
-            width: 10,
-          )
-        ],
-      ),
-      body: Padding(
+        ),
+      );
+    } else {
+      return Padding(
         padding: const EdgeInsets.all(10.0),
         child: ListView.builder(
           itemCount: chatListItems.length,
@@ -137,7 +117,43 @@ class _ChatListPageState extends State<ChatListPage> {
             );
           },
         ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFF2C2C37),
+      appBar: AppBar(
+        title: Text(
+          "Chats",
+          style: TextStyle(
+              fontFamily: "Montserrat Bold",
+              color: Color(0xFF2C2C37),
+              fontSize: 18),
+        ),
+        backgroundColor: Color(0xFFFFC495),
+        actions: <Widget>[
+          Container(
+            alignment: Alignment.center,
+            child: IconButton(
+              icon: Icon(
+                Icons.search,
+                color: Color(0xFF2C2C37),
+              ),
+              onPressed: () {
+                Toast.show("Incomplete!", context,
+                    duration: Toast.LENGTH_SHORT);
+              },
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          )
+        ],
       ),
+      body: displayContent(),
     );
   }
 }

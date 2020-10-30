@@ -12,6 +12,7 @@ class RequestPage extends StatefulWidget {
 
 class _RequestPageState extends State<RequestPage> {
   String uId, name, phone;
+  bool isLender;
   List<Request> requests = <Request>[];
 
   getUserId() {
@@ -31,6 +32,7 @@ class _RequestPageState extends State<RequestPage> {
       setState(() {
         name = snapshot["name"];
         phone = snapshot["phoneNo"];
+        isLender = snapshot["isLender"];
       });
     });
   }
@@ -108,27 +110,18 @@ class _RequestPageState extends State<RequestPage> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF1E1E29),
-      appBar: AppBar(
-        // toolbarHeight: 35,
-        backgroundColor: Color(0xFF2C2C37),
-        iconTheme: IconThemeData(
+  Widget displayContent() {
+    if (requests.length == 0 && isLender) {
+      return Center(
+          child: Text(
+        "You have no requests!",
+        style: TextStyle(
           color: Color(0xFFFFC495),
+          fontFamily: "Montserrat SemiBold",
         ),
-        centerTitle: true,
-        title: Text(
-          "Chat Requests",
-          style: TextStyle(
-              fontFamily: "Montserrat Bold",
-              color: Color(0xFFE5E5E5),
-              fontSize: 16),
-        ),
-        elevation: 0,
-      ),
-      body: Padding(
+      ));
+    } else if (requests.length != 0) {
+      return Padding(
         padding: const EdgeInsets.all(10.0),
         child: ListView.builder(
           itemCount: requests.length,
@@ -259,7 +252,40 @@ class _RequestPageState extends State<RequestPage> {
             );
           },
         ),
+      );
+    } else if (!isLender) {
+      Center(
+          child: Text(
+        "You are not a lender!",
+        style: TextStyle(
+          color: Color(0xFFFFC495),
+          fontFamily: "Montserrat SemiBold",
+        ),
+      ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFF1E1E29),
+      appBar: AppBar(
+        // toolbarHeight: 35,
+        backgroundColor: Color(0xFF2C2C37),
+        iconTheme: IconThemeData(
+          color: Color(0xFFFFC495),
+        ),
+        centerTitle: true,
+        title: Text(
+          "Chat Requests",
+          style: TextStyle(
+              fontFamily: "Montserrat Bold",
+              color: Color(0xFFE5E5E5),
+              fontSize: 16),
+        ),
+        elevation: 0,
       ),
+      body: displayContent(),
     );
   }
 }
