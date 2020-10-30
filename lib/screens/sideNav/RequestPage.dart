@@ -52,33 +52,34 @@ class _RequestPageState extends State<RequestPage> {
     });
   }
 
-  Future createChatList(
-      String renterId, String renterName, String bikeName) async {
+  Future createChatList(Request request) async {
     Firestore.instance
         .collection('users')
         .doc(uId)
         .collection("chatlist")
-        .doc(renterName)
+        .doc(request.renterName)
         .set({
-      'name': renterName,
-      'forBike': bikeName,
-      'chatDoc': uId + renterId
+      'name': request.renterName,
+      'forBike': request.bikeName,
+      'chatDoc': uId + request.renterId,
+      'contact': request.renterPhone,
     });
 
     Firestore.instance
         .collection('users')
-        .doc(renterId)
+        .doc(request.renterId)
         .collection("chatlist")
         .doc(name)
         .set({
-      'name': renterName,
-      'forBike': bikeName,
-      'chatDoc': uId + renterId
+      'name': name,
+      'forBike': request.bikeName,
+      'contact': phone,
+      'chatDoc': uId + request.renterId
     });
 
     Firestore.instance //adding new lender bike document
         .collection('chats')
-        .doc(uId + renterId) //chat doc is named as lenderId + renterId
+        .doc(uId + request.renterId) //chat doc is named as lenderId + renterId
         .set({'bookingFinal': false});
   }
 
@@ -149,7 +150,9 @@ class _RequestPageState extends State<RequestPage> {
                     ),
                   ),
                   title: Text(
-                    requests[index].renterName,
+                    requests[index].renterName != null
+                        ? requests[index].renterName
+                        : "None",
                     style: TextStyle(
                         fontSize: 18,
                         fontFamily: "Montserrat Medium",
@@ -236,10 +239,7 @@ class _RequestPageState extends State<RequestPage> {
                             onPressed: () {
                               Toast.show("Incomplete!", context,
                                   duration: Toast.LENGTH_SHORT);
-                              createChatList(
-                                  requests[index].renterId,
-                                  requests[index].renterName,
-                                  requests[index].bikeName);
+                              createChatList(requests[index]);
                               createChatDoc(requests[index].renterId);
                               deleteRequest(requests[index].renterName);
                               setState(() {

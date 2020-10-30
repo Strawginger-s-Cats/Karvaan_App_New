@@ -2,26 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:karvaan/models/ChatItem.dart';
 import 'package:karvaan/screens/MapsPage.dart';
 import 'package:toast/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatPage extends StatefulWidget {
-  final String chatId;
-  final String messageSendorName;
-  ChatPage(this.chatId,this.messageSendorName);
+  final ChatItem chatInfo;
+  ChatPage(this.chatInfo);
 
   @override
-  _ChatPageState createState() => _ChatPageState(chatId,messageSendorName);
+  _ChatPageState createState() => _ChatPageState(chatInfo);
 }
 
 class _ChatPageState extends State<ChatPage> {
   String uId, name, phone, email;
-  String chatId;
-  String messageSendorName;
-  _ChatPageState(this.chatId,this.messageSendorName);
-
-  //List<String> arr = ['Hi', 'Vibhanshu'];
+  ChatItem chatInfo;
+  _ChatPageState(this.chatInfo);
+  Future<void> _launched;
+  String _phone = '';
 
   Stream chatMessageStream;
 
@@ -29,7 +28,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     getUserId();
     getUserInfo();
-    getConversationMessages(chatId).then((value) {
+    getConversationMessages(chatInfo.chatDoc).then((value) {
       setState(() {
         chatMessageStream = value;
       });
@@ -87,15 +86,15 @@ class _ChatPageState extends State<ChatPage> {
         "message": _chatBoxController.text.toString(),
         "time": DateTime.now().microsecondsSinceEpoch,
       };
-      addConversationMessages(chatId, messageMap);
+      addConversationMessages(chatInfo.chatDoc, messageMap);
       _chatBoxController.text = "";
     }
   }
 
   addConversationMessages(String chatId, messageMap) {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("chats")
-        .document(chatId)
+        .doc(chatId)
         .collection("ChatPage")
         .add(messageMap)
         .catchError((e) {
@@ -104,7 +103,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   getConversationMessages(String chatId) async {
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection("chats")
         .document(chatId)
         .collection("ChatPage")
@@ -327,7 +326,7 @@ class _ChatPageState extends State<ChatPage> {
                             ),
                             child: FlatButton(
                               onPressed: () async {
-                                clearChat("hello");
+                                clearChat();
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
@@ -358,11 +357,26 @@ class _ChatPageState extends State<ChatPage> {
         });
   }
 
-  Future<void> clearChat(String userId) {
-    // Firestore.instance //adding new bike document
-    //     .collection('chats')
-    //     .doc(userId+renterId)    //here we have to check ih the current user is renter or user
-    //     .delete();
+  Future<void> clearChat() {
+    FirebaseFirestore.instance
+        .collection('chats')
+        .doc(chatInfo.chatDoc)
+        .delete();
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .collection("chatlist")
+        .doc(chatInfo.name)
+        .delete();
+  }
+
+  Future<void> changeBikeRentStatus() {
+    //to change bike availabiltiy status when renter confirms the bike
+    FirebaseFirestore.instance
+        .collection('availableBikes')
+        .doc(chatInfo.forBike)
+        .update({"onRent": true});
   }
 
   @override
@@ -375,7 +389,7 @@ class _ChatPageState extends State<ChatPage> {
         ),
         centerTitle: true,
         title: Text(
-          messageSendorName,
+          chatInfo.name,
           style: TextStyle(
               fontFamily: "Montserrat Bold",
               color: Color(0xFFE5E5E5),
@@ -384,9 +398,19 @@ class _ChatPageState extends State<ChatPage> {
         ),
         elevation: 1,
         actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
+          Container(
+            alignment: Alignment.center,
+            child: IconButton(
+              icon: Icon(
+                Icons.phone,
+                color: Color(0xFFFFC495),
+              ),
+              onPressed: () {},
+            ),
           ),
+          SizedBox(
+            width: 10,
+          )
         ],
       ),
       backgroundColor: Color(0xFF1E1E29),
@@ -569,4 +593,3 @@ class MessageTile extends StatelessWidget {
     );
   }
 }
-

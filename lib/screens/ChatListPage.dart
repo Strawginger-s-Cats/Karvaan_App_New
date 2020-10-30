@@ -39,8 +39,8 @@ class _ChatListPageState extends State<ChatListPage> {
         .listen((querySnapshot) {
       setState(() {
         querySnapshot.docs.forEach((doc) {
-          ChatItem request =
-              new ChatItem(doc["name"], doc["forBike"], doc["chatDoc"]);
+          ChatItem request = new ChatItem(
+              doc["name"], doc["forBike"], doc["chatDoc"], doc["contact"]);
           chatListItems.add(request);
         });
       });
@@ -94,7 +94,7 @@ class _ChatListPageState extends State<ChatListPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              ChatPage(chatListItems[index].chatDoc,chatListItems[index].name)));
+                              ChatPage(chatListItems[index])));
                 },
                 leading: Container(
                   height: 60,
