@@ -18,8 +18,6 @@ class _ChatPageState extends State<ChatPage> {
   String uId, name, phone, email;
   String chatId = "ab";
 
-  List<MessageTile> chatTileMessages = <MessageTile>[];
-
   //List<String> arr = ['Hi', 'Vibhanshu'];
 
   Stream chatMessageStream;

@@ -44,8 +44,8 @@ class _MapsPageState extends State<MapsPage> {
   final GoogleSignIn googleSignIn = new GoogleSignIn();
 
   Future<void> signOutGoogle() async {
-  await googleSignIn.signOut();
-}
+    await googleSignIn.signOut();
+  }
 
   // var points = <LatLng>[
   //   //somepoints for polyline
@@ -125,6 +125,7 @@ class _MapsPageState extends State<MapsPage> {
   Future getUserBikesFromFirebase() async {
     FirebaseFirestore.instance
         .collection('availableBikes')
+        .where('onRent', isEqualTo: false)
         .snapshots()
         .listen((querySnapshot) {
       setState(() {
@@ -182,7 +183,7 @@ class _MapsPageState extends State<MapsPage> {
     });
   }
 
-  Future sendChatRequest(String ownerId) async {
+  Future sendChatRequest(String ownerId, String cycleName) async {
     Firestore.instance //adding new lender bike document
         .collection('users')
         .doc(ownerId)
@@ -190,10 +191,10 @@ class _MapsPageState extends State<MapsPage> {
         .doc(name)
         .set({
       'renterName': name,
+      'bikeName': cycleName,
       'renterPhone': phone,
       'renterId': uId,
-      'location':
-          new GeoPoint(current_location.latitude, current_location.longitude),
+      'location': "Nearby",
     });
   }
 
@@ -340,7 +341,7 @@ class _MapsPageState extends State<MapsPage> {
                             child: FlatButton(
                               onPressed: () async {
                                 String _ownerId = cycle.ownerId;
-                                sendChatRequest(_ownerId);
+                                sendChatRequest(_ownerId, cycle.name);
                                 Navigator.of(context).pop(); //pass bike data
                               },
                               child: Center(
@@ -367,7 +368,10 @@ class _MapsPageState extends State<MapsPage> {
 
   Widget loadMap() {
     return StreamBuilder(
-        stream: Firestore.instance.collection("availableBikes").snapshots(),
+        stream: Firestore.instance
+            .collection("availableBikes")
+            .where("onRent", isEqualTo: false)
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return Text('Loading maps..Please Wait');
           for (int i = 0; i < snapshot.data.documents.length; i++) {

@@ -11,7 +11,7 @@ class RequestPage extends StatefulWidget {
 }
 
 class _RequestPageState extends State<RequestPage> {
-  String uId;
+  String uId, name, phone;
   List<Request> requests = <Request>[];
 
   getUserId() {
@@ -19,6 +19,20 @@ class _RequestPageState extends State<RequestPage> {
     if (auth.currentUser != null) {
       uId = auth.currentUser.uid;
     }
+  }
+
+  Future getUserInfo() async {
+    //to get user information
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .snapshots()
+        .listen((snapshot) {
+      setState(() {
+        name = snapshot["name"];
+        phone = snapshot["phoneNo"];
+      });
+    });
   }
 
   Future getRentRequestsFromFirebase() async {
@@ -31,11 +45,41 @@ class _RequestPageState extends State<RequestPage> {
       setState(() {
         querySnapshot.docs.forEach((doc) {
           Request request = new Request(doc["renterId"], doc["renterName"],
-              doc["renterPhone"], doc["location"]);
+              doc["renterPhone"], doc["location"], doc["bikeName"]);
           requests.add(request);
         });
       });
     });
+  }
+
+  Future createChatList(
+      String renterId, String renterName, String bikeName) async {
+    Firestore.instance
+        .collection('users')
+        .doc(uId)
+        .collection("chatlist")
+        .doc(renterName)
+        .set({
+      'name': renterName,
+      'forBike': bikeName,
+      'chatDoc': uId + renterId
+    });
+
+    Firestore.instance
+        .collection('users')
+        .doc(renterId)
+        .collection("chatlist")
+        .doc(name)
+        .set({
+      'name': renterName,
+      'forBike': bikeName,
+      'chatDoc': uId + renterId
+    });
+
+    Firestore.instance //adding new lender bike document
+        .collection('chats')
+        .doc(uId + renterId) //chat doc is named as lenderId + renterId
+        .set({'bookingFinal': false});
   }
 
   Future createChatDoc(String renterId) async {
@@ -49,7 +93,7 @@ class _RequestPageState extends State<RequestPage> {
     Firestore.instance
         .collection('users')
         .doc(uId)
-        .collection("renterRequests")
+        .collection("rentRequests")
         .doc(name)
         .delete();
   }
@@ -128,7 +172,7 @@ class _RequestPageState extends State<RequestPage> {
                             width: 5,
                           ),
                           Text(
-                            requests[index].location.toString(),
+                            requests[index].bikeName,
                             style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: "Montserrat Regular",
@@ -161,6 +205,11 @@ class _RequestPageState extends State<RequestPage> {
                               print((requests[index].renterName));
                               // setState(() {
                               deleteRequest(requests[index].renterName);
+                              setState(() {
+                                requests.removeAt(index);
+                                getRentRequestsFromFirebase();
+                              });
+
                               // });
                             },
                           ),
@@ -187,8 +236,16 @@ class _RequestPageState extends State<RequestPage> {
                             onPressed: () {
                               Toast.show("Incomplete!", context,
                                   duration: Toast.LENGTH_SHORT);
+                              createChatList(
+                                  requests[index].renterId,
+                                  requests[index].renterName,
+                                  requests[index].bikeName);
                               createChatDoc(requests[index].renterId);
                               deleteRequest(requests[index].renterName);
+                              setState(() {
+                                requests.clear();
+                                getRentRequestsFromFirebase();
+                              });
                             },
                           )
                         ],

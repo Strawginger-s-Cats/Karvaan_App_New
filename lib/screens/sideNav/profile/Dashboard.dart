@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:karvaan/models/Cycles.dart';
+import 'package:karvaan/screens/ChatListPage.dart';
 import 'package:karvaan/screens/ChatPage.dart';
 import 'package:latlong/latlong.dart';
 import 'package:karvaan/screens/MapsPageRenter.dart';
@@ -143,6 +144,7 @@ class _ProfilePageState extends State<ProfilePage> {
       'name': newCycle.name,
       'ownerId': uId,
       'owner': name,
+      'onRent': false,
     });
   }
 
@@ -588,7 +590,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             return Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ChatPage()));
+                                    builder: (context) => ChatListPage()));
                           }),
                       FlatButton(
                           //tap on the button to add your cycles.....
