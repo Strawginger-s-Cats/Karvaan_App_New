@@ -7,16 +7,17 @@ import 'package:toast/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatPage extends StatefulWidget {
-  // final String chatId;
-  // ChatPage(this.chatId);
+  final String chatId;
+  ChatPage(this.chatId);
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  _ChatPageState createState() => _ChatPageState(chatId);
 }
 
 class _ChatPageState extends State<ChatPage> {
   String uId, name, phone, email;
-  String chatId = "ab";
+  String chatId;
+  _ChatPageState(this.chatId);
 
   //List<String> arr = ['Hi', 'Vibhanshu'];
 

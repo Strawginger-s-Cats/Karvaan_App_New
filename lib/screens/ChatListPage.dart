@@ -90,8 +90,11 @@ class _ChatListPageState extends State<ChatListPage> {
               color: Color(0xFF282833),
               child: ListTile(
                 onTap: () {
-                  return Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChatPage()));
+                  return Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ChatPage(chatListItems[index].chatDoc)));
                 },
                 leading: Container(
                   height: 60,
