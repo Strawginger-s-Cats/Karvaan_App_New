@@ -9,6 +9,7 @@ import 'package:karvaan/models/Cycles.dart';
 import 'package:karvaan/screens/ChatPage.dart';
 import 'package:karvaan/screens/services/authentication.dart';
 import 'package:karvaan/screens/sideNav/AboutPage.dart';
+import 'package:karvaan/screens/sideNav/BookingHistory.dart';
 import 'package:karvaan/screens/sideNav/RequestPage.dart';
 import 'package:karvaan/screens/sideNav/profile/Dashboard.dart';
 import 'package:latlong/latlong.dart';
@@ -486,7 +487,7 @@ class _MapsPageState extends State<MapsPage> {
                   color: Color(0xFFFFC495),
                 ),
                 title: Text(
-                  'Requests',
+                  'Rent Requests',
                   style: TextStyle(
                       fontFamily: 'Montserrat SemiBold',
                       color: Color(0xFFFFC495)),
@@ -504,28 +505,28 @@ class _MapsPageState extends State<MapsPage> {
                   // ...
                 },
               ),
-              // Divider(
-              //   // thickness: 1,
-              //   color: Color(0xFFFFC495),
-              // ),
-              // ListTile(
-              //   leading: Icon(
-              //     Icons.settings,
-              //     color: Color(0xFFFFC495),
-              //   ),
-              //   title: Text(
-              //     'Settings',
-              //     style: TextStyle(
-              //         fontFamily: 'Montserrat SemiBold',
-              //         color: Color(0xFFFFC495)),
-              //   ),
-              //   onTap: () {
-              //     Toast.show("Incomplete!", context,
-              //         duration: Toast.LENGTH_SHORT);
-              //     // app settings
-              //     // ...
-              //   },
-              // ),
+              Divider(
+                // thickness: 1,
+                color: Color(0xFFFFC495),
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.library_books,
+                  color: Color(0xFFFFC495),
+                ),
+                title: Text(
+                  'Previous Bookings',
+                  style: TextStyle(
+                      fontFamily: 'Montserrat SemiBold',
+                      color: Color(0xFFFFC495)),
+                ),
+                onTap: () {
+                  return Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BookingHistory()));
+                  // app settings
+                  // ...
+                },
+              ),
               Divider(
                 // thickness: 1,
                 color: Color(0xFFFFC495),
@@ -536,7 +537,7 @@ class _MapsPageState extends State<MapsPage> {
                   color: Color(0xFFFFC495),
                 ),
                 title: Text(
-                  'About Page',
+                  'About',
                   style: TextStyle(
                       fontFamily: 'Montserrat SemiBold',
                       color: Color(0xFFFFC495)),

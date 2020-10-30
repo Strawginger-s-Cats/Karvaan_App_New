@@ -12,6 +12,7 @@ class _AboutState extends State<About> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF1E1E29),
       appBar: AppBar(
         backgroundColor: Color(0xFF282833),
         iconTheme: IconThemeData(
@@ -19,195 +20,142 @@ class _AboutState extends State<About> {
         ),
         centerTitle: true,
         title: Text(
-          "ABOUT KARVAAN....",
+          "About Karvaan",
           style: TextStyle(
               fontFamily: "Montserrat Bold",
               color: Color(0xFFFFC495),
               fontSize: 18),
         ),
-        elevation: 1,
-        actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-          ),
-        ],
+        elevation: 0,
+        // actions: <Widget>[
+        //   Padding(
+        //     padding: EdgeInsets.only(right: 20.0),
+        //   ),
+        // ],
       ),
-      backgroundColor: Color(0xFF1E1E29),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              height: 30,
-              width: 50,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(18.0, 20.0, 10.0, 10.0),
-              child: Text(
-                'Karvaan: Redefining Limits.....',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontFamily: 'Montserrat Medium',
-                  fontStyle: FontStyle.italic,
-                  color: Color(0xFFFFC495),
-                  fontSize: 18,
-                ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 40,
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 20.0),
+            //margin: EdgeInsets.only(bottom: 22),
+            child: Text(
+              'Welcome to the world of sharing and caring',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Montserrat Regular',
+                color: Color(0xFFE5E5E5),
+                fontSize: 22,
               ),
             ),
-            Container(
-              child: Image.asset(
-                'assets/images/ic_launcher_round.png',
-                height: 120,
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
+          Container(
+            child: Image.asset(
+              'assets/images/ic_launcher_round.png',
+              height: 120,
+            ),
+          ),
+          Container(
+            width: 20,
+            padding: EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
+            child: Row(
+              children: [
+                Flexible(
+                    child: new Text(
+                  '\" Karvaan is a simple bicycle sharing app that enables its users to share and rent bicycles. Its intuitive UI and seamless security features promises the users a wonderful experience \"',
+                  style: TextStyle(
+                    fontFamily: 'Montserrat Medium',
+                    color: Color(0xFFCA9367),
+                    fontSize: 16,
+                    // letterSpacing: -0.40,
+                  ),
+                  textAlign: TextAlign.center,
+                ))
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 70, top: 10, right: 70, bottom: 0),
+            child: Divider(
+              thickness: 2,
+              color: Color(0xFF4E4E4E),
+              height: 15.0,
+              indent: 5.0,
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(18.0, 20.0, 10.0, 10.0),
+            child: Text(
+              'DEVELOPERS',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Montserrat Bold',
+                color: Color(0xFFFFFFFF),
+                fontSize: 25,
               ),
             ),
-            Container(
-              width: 20,
-              padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-              child: Row(
-                children: [
-                  Flexible(
-                      child: new Text(
-                    "Karvaan, a Cycle Lending App enables people to book a cycle for rent. One can also lend Cycles and get paid in return!!\nThe app with its flexible features paves the way for easy and uninterrupted journey and thus redefines a person's limitations!\n\nSo, set back and be ready to enjoy this wonderful 'Karvaan'. ",
-                    style: TextStyle(
-                      fontFamily: 'Montserrat Regular',
-                      fontStyle: FontStyle.italic,
-                      color: Color(0xFFCA9367),
-                      fontSize: 16,
-                      // letterSpacing: -0.40,
-                    ),
-                  ))
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 70, top: 10, right: 70, bottom: 0),
-              child: Divider(
-                // thickness: 1,
-                color: Color(0xFFFFC495),
-                height: 15.0,
-                indent: 5.0,
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(18.0, 20.0, 10.0, 10.0),
+          ),
+          Container(
+              padding: EdgeInsets.fromLTRB(18.0, 10.0, 10.0, 10.0),
               child: Column(
                 children: [
                   Text(
-                    'Wanna Try??',
+                    'Strawginger-s-Cats:',
                     style: TextStyle(
-                      fontFamily: 'Montserrat SemiBold',
+                      fontFamily: 'Montserrat Medium',
                       color: Color(0xFFFFC495),
-                      fontSize: 22,
+                      fontSize: 18,
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 8.0,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  Column(
                     children: [
-                      RaisedButton(
-                          child: Text(
-                            'Rent a Cycle',
-                            style: TextStyle(color: Colors.blue, fontSize: 16),
-                          ),
-                          color: Color(0xFFFFC495),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MapsPage()));
-                          }),
-                      RaisedButton(
-                          child: Text(
-                            'Lend a Cycle',
-                            style: TextStyle(color: Colors.blue, fontSize: 16),
-                          ),
-                          color: Color(0xFFFFC495),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProfilePage()));
-                          }),
+                      Text(
+                        'Anushree',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat SemiBold',
+                          color: Color(0xFFFFFFFF),
+                          fontSize: 17,
+                        ),
+                      ),
+                      Text(
+                        'Kushagra',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat SemiBold',
+                          color: Color(0xFFFFFFFF),
+                          fontSize: 17,
+                        ),
+                      ),
+                      Text(
+                        'Simran',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat SemiBold',
+                          color: Color(0xFFFFFFFF),
+                          fontSize: 17,
+                        ),
+                      ),
+                      Text(
+                        'Vibhanshu',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat SemiBold',
+                          color: Color(0xFFFFFFFF),
+                          fontSize: 17,
+                        ),
+                      ),
                     ],
                   )
                 ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 70, top: 10, right: 70, bottom: 0),
-              child: Divider(
-                // thickness: 1,
-                color: Color(0xFFFFC495),
-                height: 10.0,
-                indent: 5.0,
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(18.0, 20.0, 10.0, 10.0),
-              child: Text(
-                '\nDEVELOPERS',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Montserrat Bold',
-                  color: Color(0xFFFFFFFF),
-                  fontSize: 25,
-                ),
-              ),
-            ),
-            Container(
-                padding: EdgeInsets.fromLTRB(18.0, 10.0, 10.0, 10.0),
-                child: Row(
-                  children: [
-                    Text(
-                      'Strawginger-s-Cats:',
-                      style: TextStyle(
-                        fontFamily: 'Montserrat Medium',
-                        color: Color(0xFFFFC495),
-                        fontSize: 18,
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          '      Anushree',
-                          style: TextStyle(
-                            fontFamily: 'Montserrat SemiBold',
-                            color: Color(0xFFFFFFFF),
-                            fontSize: 17,
-                          ),
-                        ),
-                        Text(
-                          '      Kushagra',
-                          style: TextStyle(
-                            fontFamily: 'Montserrat SemiBold',
-                            color: Color(0xFFFFFFFF),
-                            fontSize: 17,
-                          ),
-                        ),
-                        Text(
-                          '      Simran',
-                          style: TextStyle(
-                            fontFamily: 'Montserrat SemiBold',
-                            color: Color(0xFFFFFFFF),
-                            fontSize: 17,
-                          ),
-                        ),
-                        Text(
-                          '      Vibhanshu',
-                          style: TextStyle(
-                            fontFamily: 'Montserrat SemiBold',
-                            color: Color(0xFFFFFFFF),
-                            fontSize: 17,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                )),
-          ],
-        ),
+              )),
+        ],
       ),
     );
   }
