@@ -168,43 +168,6 @@ class _BookingHistoryState extends State<BookingHistory> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 8.0,
-                  ),
-                  Expanded(
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(17.0)),
-                      color: Color(0xFF2c2c37),
-                      child: Container(
-                        padding: EdgeInsets.all(24.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              bikeName[index],
-                              style: TextStyle(
-                                fontFamily: 'Montserrat Bold',
-                                fontSize: 18.0,
-                                color: Color(0xFFe5e5e5),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 8.0,
-                            ),
-                            Text(
-                              bikeOwnderName[index],
-                              style: TextStyle(
-                                fontFamily: 'Montserrat Regular',
-                                fontSize: 12.0,
-                                color: Color(0xFFCA9367),
-                              ),
-                            ),
-                            SizedBox(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             );
@@ -221,7 +184,7 @@ class _BookingHistoryState extends State<BookingHistory> {
             //           // requests[index].renterName,
             //           style: TextStyle(
             //               fontSize: 22,
-            //               fontFamily: "Montserrat Medium",
+            //               fontFamily:  "Montserrat Medium",
             //               color: Color(0xFFFFFFFF)),
             //         ),
             //         subtitle: Column(
