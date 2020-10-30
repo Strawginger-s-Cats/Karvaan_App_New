@@ -4,54 +4,110 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:karvaan/screens/MapsPage.dart';
 import 'package:toast/toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatPage extends StatefulWidget {
+  // final String chatId;
+  // ChatPage(this.chatId);
+
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<Message> messages = [
-    Message(
-      text: 'Hey, how are you?',
-      isSendByMe: true,
-    ),
-    Message(
-      text: 'Huhh!!',
-      isSendByMe: false,
-    ),
-    Message(
-      text: 'How\'s it going?',
-      isSendByMe: true,
-    ),
-    Message(
-      text: 'Huhh',
-      isSendByMe: false,
-    ),
-    Message(
-      text: 'Nice! ',
-      isSendByMe: true,
-    ),
-    Message(
-      text: 'Bye',
-      isSendByMe: false,
-    ),
-  ];
+  String uId, name, phone, email;
+  String chatId = "ab";
 
-  TextEditingController _chatBoxController = new TextEditingController();
+  List<MessageTile> chatTileMessages = <MessageTile>[];
 
-  sendMessage() {
-    if (_chatBoxController.text.isEmpty) {
-      Map<String, String> messageMap = {};
-    }
-  }
+  //List<String> arr = ['Hi', 'Vibhanshu'];
 
-  List<DropdownMenuItem<Message>> messagesDropDownList;
+  Stream chatMessageStream;
 
   @override
   void initState() {
-    messagesDropDownList = buildDropDownMenuItems(messages);
+    getUserId();
+    getUserInfo();
+    getConversationMessages(chatId).then((value) {
+      setState(() {
+        chatMessageStream = value;
+      });
+    });
     super.initState();
+  }
+
+  Widget chatMessageList() {
+    return StreamBuilder(
+      stream: chatMessageStream,
+      builder: (context, snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) {
+                  return MessageTile(
+                      snapshot.data.documents[index].data()["message"],
+                      snapshot.data.documents[index].data()["sendBy"] == name);
+                })
+            : Container();
+      },
+    );
+  }
+
+  TextEditingController _chatBoxController = new TextEditingController();
+
+  String getUserId() {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (auth.currentUser != null) {
+      uId = auth.currentUser.uid;
+    }
+    return uId;
+  }
+
+  Future getUserInfo() async {
+    //to get user information
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(getUserId())
+        .snapshots()
+        .listen((snapshot) {
+      setState(() {
+        name = snapshot["name"];
+        email = snapshot["email"];
+        phone = snapshot["phoneNo"];
+      });
+    });
+  }
+
+  sendMessage() {
+    if (_chatBoxController.text.isNotEmpty) {
+      //getUserInfo();
+      Map<String, dynamic> messageMap = {
+        "sendBy": name,
+        "message": _chatBoxController.text.toString(),
+        "time": DateTime.now().microsecondsSinceEpoch,
+      };
+      addConversationMessages(chatId, messageMap);
+    }
+  }
+
+  addConversationMessages(String chatId, messageMap) {
+    Firestore.instance
+        .collection("chats")
+        .document(chatId)
+        .collection("ChatPage")
+        .add(messageMap)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  getConversationMessages(String chatId) async {
+    return await Firestore.instance
+        .collection("chats")
+        .document(chatId)
+        .collection("ChatPage")
+        .orderBy("time", descending: false)
+        .snapshots();
   }
 
   Future<int> createConfirmationDialog(BuildContext context) {
@@ -307,17 +363,6 @@ class _ChatPageState extends State<ChatPage> {
     //     .delete();
   }
 
-  List<DropdownMenuItem<Message>> buildDropDownMenuItems(messages) {
-    List<DropdownMenuItem<Message>> items = List();
-    for (Message category in messages) {
-      items.add(DropdownMenuItem(
-        value: category,
-        child: Text(category.text),
-      ));
-    }
-    return items;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -351,7 +396,11 @@ class _ChatPageState extends State<ChatPage> {
               width: double.infinity,
               child: Stack(
                 children: [
+                  chatMessageList(),
                   Container(
+
+                      //child: ChatMessageList(),
+
                       //margin: EdgeInsets.only(top: 0,left: 10),
                       /*
                       This the container which contains all the chats between the users. This has to be kind of like scrollable but
@@ -452,6 +501,7 @@ class _ChatPageState extends State<ChatPage> {
                 Center(
                   child: GestureDetector(
                     onTap: () {
+                      sendMessage();
                       Toast.show("Incomplete!", context,
                           duration: Toast.LENGTH_SHORT);
                     },
@@ -479,10 +529,10 @@ class _ChatPageState extends State<ChatPage> {
   }
 }
 
-class Message extends StatelessWidget {
-  final String text;
+class MessageTile extends StatelessWidget {
+  final String message;
   final bool isSendByMe;
-  Message({this.text, this.isSendByMe});
+  MessageTile(this.message, this.isSendByMe);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -507,9 +557,9 @@ class Message extends StatelessWidget {
                     bottomRight: Radius.circular(23),
                   )),
         child: Text(
-          text,
+          message,
           style: TextStyle(
-            color: isSendByMe ? Color(0x1E1E29) : Color(0xFFE5E5E5),
+            color: isSendByMe ? Color(0xFF1E1E29) : Color(0xFFE5E5E5),
             fontSize: 17,
           ),
         ),
@@ -517,3 +567,17 @@ class Message extends StatelessWidget {
     );
   }
 }
+
+// class MessageTile extends StatelessWidget {
+//   final String message;
+//   MessageTile(this.message);
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       child: Text(message,
+//       style: TextStyle(
+//         color: Color(0xFFE5E5E5),
+//         fontSize:17 ),),
+//     );
+//   }
+// }

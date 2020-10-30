@@ -18,6 +18,7 @@ import '../Presentation/menu_icon_icons.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:toast/toast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class MapsPage extends StatefulWidget {
   @override
@@ -38,6 +39,14 @@ class _MapsPageState extends State<MapsPage> {
   }
 
   final GlobalKey _scaffoldKey = new GlobalKey();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseUser _user;
+  final GoogleSignIn googleSignIn = new GoogleSignIn();
+
+  Future<void> signOutGoogle() async {
+  await googleSignIn.signOut();
+}
 
   // var points = <LatLng>[
   //   //somepoints for polyline
@@ -564,6 +573,7 @@ class _MapsPageState extends State<MapsPage> {
                 ),
                 onTap: () {
                   AuthService().signOut();
+                  signOutGoogle();
                 },
               ),
             ],
