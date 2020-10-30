@@ -62,7 +62,7 @@ class _EditProfileState extends State<EditProfile> {
         backgroundColor: Color(0xFF2C2C37),
         leading: IconButton(
           icon: Icon(
-            Icons.close_rounded,
+            Icons.close,
             color: Color(0xFFFFF7C6),
           ),
           onPressed: () {
@@ -197,7 +197,7 @@ class _EditProfileState extends State<EditProfile> {
                               padding: EdgeInsets.only(
                                   left: 130, top: 4, right: 2, bottom: 2),
                               icon: Icon(
-                                Icons.https_sharp,
+                                Icons.https,
                                 color: Color(0xFF1E1E29),
                               ),
                               onPressed: () {},
@@ -222,6 +222,7 @@ class _EditProfileState extends State<EditProfile> {
                               height: 2,
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Padding(
                                   padding: EdgeInsets.fromLTRB(
@@ -236,7 +237,7 @@ class _EditProfileState extends State<EditProfile> {
                                 ),
                               ],
                             ),
-                            _editTitleTextField(),
+                            _editEmailTextField(),
                           ],
                         ),
                       ),
@@ -278,7 +279,7 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-  Widget _editTitleTextField() {
+  Widget _editEmailTextField() {
     //specifically for email edit.....
     if (_isEditingText)
       return Center(
