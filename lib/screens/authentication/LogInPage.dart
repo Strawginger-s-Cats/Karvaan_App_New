@@ -17,7 +17,7 @@ class _LogInPageState extends State<LogInPage> {
   FirebaseUser _user;
   final GoogleSignIn googleSignIn = new GoogleSignIn();
 
-  bool isSignIn = false;
+ static bool isSignIn = false;
 
   Future<void> handleSignIn() async {
     GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
