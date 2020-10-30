@@ -526,7 +526,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   image: DecorationImage(
                       // image: NetworkImage(
                       //     'https://googleflutter.com/sample_image.jpg'),
-                      image: _imageUrl == null ? NetworkImage('https://firebasestorage.googleapis.com/v0/b/karvaan-app-15704.appspot.com/o/users%2Fdownload.png?alt=media&token=af81a1c6-7748-40e7-8fa3-29427a56de7b')
+                      image: _imageUrl == null ? NetworkImage('https://firebasestorage.googleapis.com/v0/b/karvaan-app-15704.appspot.com/o/users%2Fdownload%20(1).png?alt=media&token=4337d9ee-45dd-4993-a794-ca4a70d7b911')
                                         :NetworkImage(_imageUrl),
                       fit: BoxFit.fill),
                 ),
