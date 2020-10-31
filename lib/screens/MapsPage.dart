@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocation/geolocation.dart';
+import 'package:karvaan/SamplePage.dart';
 import 'package:karvaan/models/ChatItem.dart';
 import 'package:karvaan/models/Cycles.dart';
 import 'package:karvaan/screens/ChatPage.dart';
@@ -33,7 +34,16 @@ class _MapsPageState extends State<MapsPage> {
   LatLng current_location,
       refresh_location; //to save last two locations of the user
   List<Cycles> availableCycles = <Cycles>[]; // avalable cycles for rent
+  List<Cycles> availableCycles1 = <Cycles>[];
   String name, email, phone, uId; //user  details
+
+  void removeMyBikes(List<Cycles> availableCycles) {
+    for (int i = 0; i < availableCycles.length; i++) {
+      if (availableCycles[i].ownerId != uId) {
+        availableCycles1.add(availableCycles[i]);
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -41,7 +51,7 @@ class _MapsPageState extends State<MapsPage> {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     getUserInfo();
     getUserBikesFromFirebase();
-    buildMap();
+    // buildMap();
     super.initState();
   }
 
@@ -159,6 +169,7 @@ class _MapsPageState extends State<MapsPage> {
           );
           availableCycles.add(cycle);
         });
+        removeMyBikes(availableCycles);
       });
     });
   }
@@ -198,7 +209,7 @@ class _MapsPageState extends State<MapsPage> {
 
   Future sendChatRequest(String ownerId, String cycleName) async {
     //send chat request to the owner of selected bike
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection('users')
         .doc(ownerId)
         .collection("rentRequests")
@@ -407,36 +418,39 @@ class _MapsPageState extends State<MapsPage> {
               ],
             );
           for (int i = 0; i < snapshot.data.documents.length; i++) {
-            allMarkers.add(new Marker(
-                width: 30,
-                height: 30,
-                point: new LatLng(
-                  snapshot.data.documents[i]['position']['geopoint'].latitude,
-                  snapshot.data.documents[i]['position']['geopoint'].longitude,
-                ),
-                builder: (context) => new Container(
-                      child: IconButton(
-                        icon: Icon(
-                          MdiIcons.bicycle,
-                          color: Color(0xFFFFC495),
+            if (snapshot.data.documents[i]["ownerId"] != uId) {
+              allMarkers.add(new Marker(
+                  width: 30,
+                  height: 30,
+                  point: new LatLng(
+                    snapshot.data.documents[i]['position']['geopoint'].latitude,
+                    snapshot
+                        .data.documents[i]['position']['geopoint'].longitude,
+                  ),
+                  builder: (context) => new Container(
+                        child: IconButton(
+                          icon: Icon(
+                            MdiIcons.bicycle,
+                            color: Color(0xFFFFC495),
+                          ),
+                          iconSize: 30,
+                          onPressed: () {
+                            GeoPoint loc = snapshot.data.documents[i]
+                                ['position']['geopoint'];
+                            Cycles _thisCycle = new Cycles(
+                              snapshot.data.documents[i]["name"],
+                              snapshot.data.documents[i]["ownerId"],
+                              snapshot.data.documents[i]["owner"],
+                              snapshot.data.documents[i]["location"],
+                              loc,
+                              snapshot.data.documents[i]["pricePerHr"],
+                            );
+                            createConfirmationDialog(context, _thisCycle);
+                            print(snapshot.data.documents[i]['location']);
+                          },
                         ),
-                        iconSize: 30,
-                        onPressed: () {
-                          GeoPoint loc = snapshot.data.documents[i]['position']
-                              ['geopoint'];
-                          Cycles _thisCycle = new Cycles(
-                            snapshot.data.documents[i]["name"],
-                            snapshot.data.documents[i]["ownerId"],
-                            snapshot.data.documents[i]["owner"],
-                            snapshot.data.documents[i]["location"],
-                            loc,
-                            snapshot.data.documents[i]["pricePerHr"],
-                          );
-                          createConfirmationDialog(context, _thisCycle);
-                          print(snapshot.data.documents[i]['location']);
-                        },
-                      ),
-                    )));
+                      )));
+            }
           }
           return FlutterMap(
             mapController: controller,
@@ -472,7 +486,7 @@ class _MapsPageState extends State<MapsPage> {
   }
 
   Widget displayAvailableBikes(ScrollController scrollController) {
-    if (availableCycles.length == 0) {
+    if (availableCycles1.length == 0) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -500,7 +514,7 @@ class _MapsPageState extends State<MapsPage> {
           padding: const EdgeInsets.all(10.0),
           child: ListView.builder(
             controller: scrollController,
-            itemCount: availableCycles.length,
+            itemCount: availableCycles1.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 shape: RoundedRectangleBorder(
@@ -525,7 +539,7 @@ class _MapsPageState extends State<MapsPage> {
                             SizedBox(
                               width: 5,
                             ),
-                            Text(availableCycles[index].pricePerHr,
+                            Text(availableCycles1[index].pricePerHr,
                                 style: TextStyle(
                                     fontSize: 20,
                                     fontFamily: "Montserrat Bold",
@@ -559,7 +573,7 @@ class _MapsPageState extends State<MapsPage> {
                     ),
                   ),
                   title: Text(
-                    availableCycles[index].name,
+                    availableCycles1[index].name,
                     style: TextStyle(
                         fontSize: 18,
                         fontFamily: "Montserrat Medium",
@@ -583,8 +597,8 @@ class _MapsPageState extends State<MapsPage> {
                           ),
                           Text(
                             calculateDistance(
-                                availableCycles[index].coordinates.latitude,
-                                availableCycles[index].coordinates.longitude,
+                                availableCycles1[index].coordinates.latitude,
+                                availableCycles1[index].coordinates.longitude,
                                 current_location.latitude,
                                 current_location.longitude),
                             style: TextStyle(
@@ -606,7 +620,7 @@ class _MapsPageState extends State<MapsPage> {
                         height: 8,
                       ),
                       Text(
-                        availableCycles[index].owner,
+                        availableCycles1[index].owner,
                         style: TextStyle(
                             fontSize: 14,
                             fontFamily: "Montserrat Regular",
@@ -618,7 +632,7 @@ class _MapsPageState extends State<MapsPage> {
                     ],
                   ),
                   onTap: () {
-                    createConfirmationDialog(context, availableCycles[index]);
+                    createConfirmationDialog(context, availableCycles1[index]);
                   },
                 ),
               );
@@ -810,6 +824,8 @@ class _MapsPageState extends State<MapsPage> {
                 onTap: () {
                   AuthService().signOut();
                   signOutGoogle();
+                  return Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LogInPage()));
                 },
               ),
             ],
