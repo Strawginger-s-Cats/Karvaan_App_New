@@ -134,8 +134,8 @@ class _GooglePhState extends State<GooglePh> {
                     ),
                     onPressed: () {
                       print(phoneNumber);
-                      Toast.show("Incomplete!", context,
-                          duration: Toast.LENGTH_SHORT);
+                      // Toast.show("Incomplete!", context,
+                      //     duration: Toast.LENGTH_SHORT);
                       createRecord(getUser().email, getUser().displayName,
                           "+91" + phoneNumber);
 

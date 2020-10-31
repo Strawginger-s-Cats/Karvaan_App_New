@@ -17,7 +17,7 @@ class _LogInPageState extends State<LogInPage> {
   FirebaseUser _user;
   final GoogleSignIn googleSignIn = new GoogleSignIn();
 
- static bool isSignIn = false;
+  static bool isSignIn = false;
 
   Future<void> handleSignIn() async {
     GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -85,8 +85,8 @@ class _LogInPageState extends State<LogInPage> {
                 margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
                 child: FlatButton(
                   onPressed: () {
-                    Toast.show("Incomplete!", context,
-                        duration: Toast.LENGTH_SHORT);
+                    // Toast.show("Incomplete!", context,
+                    //     duration: Toast.LENGTH_SHORT);
                     return Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -110,10 +110,8 @@ class _LogInPageState extends State<LogInPage> {
                 onPressed: () {
                   handleSignIn();
 
-                  return Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => GooglePh()));
+                  return Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => GooglePh()));
                 },
                 borderRadius: 17.0,
                 darkMode: true,

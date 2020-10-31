@@ -109,8 +109,8 @@ class _PhoneVerifPageState extends State<PhoneVerifPage> {
                     ),
                     onPressed: () {
                       print(phoneNumber);
-                      Toast.show("Incomplete!", context,
-                          duration: Toast.LENGTH_SHORT);
+                      // Toast.show("Incomplete!", context,
+                      //     duration: Toast.LENGTH_SHORT);
 
                       return Navigator.push(
                           context,
