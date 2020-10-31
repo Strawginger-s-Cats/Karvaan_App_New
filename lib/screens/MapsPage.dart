@@ -761,32 +761,32 @@ class _MapsPageState extends State<MapsPage> {
                 thickness: 1,
                 color: Color(0xFF282833),
               ),
-              // /* &&&&&&   Added a test list tile for enterPrice page &&&&&&&&&&&&&&&&&*/
-              ListTile(
-                leading: Icon(
-                  Icons.monetization_on,
-                  color: Color(0xFFFFC495),
-                ),
-                title: Text(
-                  'Test Price page',
-                  style: TextStyle(
-                      fontFamily: 'Montserrat SemiBold',
-                      color: Color(0xFFFFC495)),
-                ),
-                onTap: () {
-                  return Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PaymentsPage(new ChatItem(
-                              "Name", "Yantriki", "ab", "8888888888", "abb"))));
-                  // app settings
-                  // ...
-                },
-              ),
-              Divider(
-                thickness: 1,
-                color: Color(0xFF282833),
-              ),
+              // // /* &&&&&&   Added a test list tile for enterPrice page &&&&&&&&&&&&&&&&&*/
+              // ListTile(
+              //   leading: Icon(
+              //     Icons.monetization_on,
+              //     color: Color(0xFFFFC495),
+              //   ),
+              //   title: Text(
+              //     'Test Price page',
+              //     style: TextStyle(
+              //         fontFamily: 'Montserrat SemiBold',
+              //         color: Color(0xFFFFC495)),
+              //   ),
+              //   onTap: () {
+              //     return Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //             builder: (context) => PaymentsPage(new ChatItem(
+              //                 "Name", "Yantriki", "ab", "8888888888", "abb"))));
+              //     // app settings
+              //     // ...
+              //   },
+              // ),
+              // Divider(
+              //   thickness: 1,
+              //   color: Color(0xFF282833),
+              // ),
               // /* &&&&&&&&&&&&&&&&&&&&& Test list tile ends here &&&&&&&&&&&&&& */
               ListTile(
                 leading: Icon(
