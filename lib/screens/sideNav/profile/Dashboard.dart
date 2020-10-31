@@ -342,8 +342,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             onPressed: () async {
                               addItemToList();
                               addNewBikeToFirebase();
-                              Toast.show("Incomplete!", context,
-                                  duration: Toast.LENGTH_SHORT);
+                              // Toast.show("Incomplete!", context,
+                              //     duration: Toast.LENGTH_SHORT);
                               Navigator.of(context).pop(); //pass bike data
                             },
                             child: Center(

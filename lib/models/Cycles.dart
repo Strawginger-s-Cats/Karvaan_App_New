@@ -10,4 +10,6 @@ class Cycles {
 
   Cycles(this.name, this.ownerId, this.owner, this.location, this.coordinates,
       this.pricePerHr);
+
+  Cycles.fromCycles(this.name, this.owner, this.pricePerHr);
 }
