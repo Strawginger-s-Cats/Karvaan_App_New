@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math' show cos, sqrt, asin;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocation/geolocation.dart';
 import 'package:karvaan/models/Cycles.dart';
 import 'package:karvaan/screens/ChatPage.dart';
-import 'package:karvaan/screens/enterPrice.dart';
+import 'package:karvaan/screens/PaymentsPage.dart';
 import 'package:karvaan/screens/services/authentication.dart';
 import 'package:karvaan/screens/sideNav/AboutPage.dart';
 import 'package:karvaan/screens/sideNav/BookingHistory.dart';
@@ -37,6 +38,7 @@ class _MapsPageState extends State<MapsPage> {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     getUserInfo();
     getUserBikesFromFirebase();
+    buildMap();
     super.initState();
   }
 
@@ -136,7 +138,7 @@ class _MapsPageState extends State<MapsPage> {
           String name = doc["name"];
           String rent = doc["pricePerHr"];
           String location = doc["location"];
-          GeoPoint coords = null;
+          GeoPoint coords = doc["position"]["geopoint"];
           String ownerId = doc["ownerId"];
           String owner = doc["owner"];
           Cycles cycle = Cycles(
@@ -448,6 +450,18 @@ class _MapsPageState extends State<MapsPage> {
         });
   }
 
+  String calculateDistance(lat1, lon1, lat2, lon2) {
+    //function to calculate distance between two coordinates
+    double distance;
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    distance = 12742 * asin(sqrt(a));
+    return distance.toStringAsFixed(2);
+  }
+
   Widget displayAvailableBikes(ScrollController scrollController) {
     if (availableCycles.length == 0) {
       return Center(
@@ -559,7 +573,19 @@ class _MapsPageState extends State<MapsPage> {
                             width: 5,
                           ),
                           Text(
-                            '0.7km away',
+                            calculateDistance(
+                                availableCycles[index].coordinates.latitude,
+                                availableCycles[index].coordinates.longitude,
+                                current_location.latitude,
+                                current_location.longitude),
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: "Montserrat Regular",
+                                color: Color(0xFFCA9367)),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            "km away",
                             style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: "Montserrat Regular",
@@ -734,32 +760,30 @@ class _MapsPageState extends State<MapsPage> {
                 thickness: 1,
                 color: Color(0xFF282833),
               ),
-              /* &&&&&&   Added a test list tile for enterPrice page &&&&&&&&&&&&&&&&&*/
-              ListTile(
-                leading: Icon(
-                  Icons.monetization_on,
-                  color: Color(0xFFFFC495),
-                ),
-                title: Text(
-                  'Test Price page',
-                  style: TextStyle(
-                      fontFamily: 'Montserrat SemiBold',
-                      color: Color(0xFFFFC495)),
-                ),
-                onTap: () {
-                  return Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => enterPrice()));
-                  // app settings
-                  // ...
-                },
-              ),
-              Divider(
-                thickness: 1,
-                color: Color(0xFF282833),
-              ),
-              /* &&&&&&&&&&&&&&&&&&&&& Test list tile ends here &&&&&&&&&&&&&& */
+              // /* &&&&&&   Added a test list tile for enterPrice page &&&&&&&&&&&&&&&&&*/
+              // ListTile(
+              //   leading: Icon(
+              //     Icons.monetization_on,
+              //     color: Color(0xFFFFC495),
+              //   ),
+              //   title: Text(
+              //     'Test Price page',
+              //     style: TextStyle(
+              //         fontFamily: 'Montserrat SemiBold',
+              //         color: Color(0xFFFFC495)),
+              //   ),
+              //   onTap: () {
+              //     return Navigator.push(context,
+              //         MaterialPageRoute(builder: (context) => PaymentsPage()));
+              //     // app settings
+              //     // ...
+              //   },
+              // ),
+              // Divider(
+              //   thickness: 1,
+              //   color: Color(0xFF282833),
+              // ),
+              // /* &&&&&&&&&&&&&&&&&&&&& Test list tile ends here &&&&&&&&&&&&&& */
               ListTile(
                 leading: Icon(
                   MdiIcons.logout,

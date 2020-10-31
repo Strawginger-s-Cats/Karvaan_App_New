@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:karvaan/models/ChatItem.dart';
 import 'package:karvaan/screens/MapsPage.dart';
+import 'package:karvaan/screens/PaymentsPage.dart';
 import 'package:toast/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -207,7 +208,11 @@ class _ChatPageState extends State<ChatPage> {
                             child: FlatButton(
                               onPressed: () async {
                                 // navigate to payments
-                                Navigator.of(context).pop();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PaymentsPage(chatInfo)));
                               },
                               child: Center(
                                 child: Text(

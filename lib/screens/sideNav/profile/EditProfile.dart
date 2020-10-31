@@ -16,7 +16,7 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   String uId, name = "", phone = '', email = "";
-  String _imageUrl;
+  String _imageUrl, profImagePath;
   bool isLoading = false;
   User user;
   TextEditingController _emailController;
@@ -43,6 +43,18 @@ class _EditProfileState extends State<EditProfile> {
         email = snapshot["email"];
         phone = snapshot["phoneNo"];
       });
+    });
+  }
+
+  Future updateInfo() async {
+    //add new bike location(lat and long) to firebase database
+
+    FirebaseFirestore.instance //adding new lender bike document
+        .collection('users')
+        .doc(uId)
+        .update({
+      'name': name,
+      'email': email,
     });
   }
 
@@ -87,7 +99,12 @@ class _EditProfileState extends State<EditProfile> {
               Icons.check,
               color: Color(0xFFFFF7C6),
             ),
-            onPressed: () {},
+            onPressed: () {
+              updateInfo();
+              uploadProfilePicture(profImagePath);
+              Toast.show("Changes Saved", context,
+                  duration: Toast.LENGTH_SHORT);
+            },
           ),
         ],
       ),
@@ -151,7 +168,10 @@ class _EditProfileState extends State<EditProfile> {
                         File image = await ImagePicker.pickImage(
                             source: ImageSource.gallery);
                         print(image.path);
-                        uploadProfilePicture(image.path.toString());
+                        setState(() {
+                          profImagePath = image.path.toString();
+                        });
+                        ;
                       },
                     ),
                   ),
