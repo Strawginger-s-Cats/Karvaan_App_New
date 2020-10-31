@@ -8,7 +8,7 @@ import 'package:toast/toast.dart';
 /* &&&&&&&&&&&&&&&&    For testing purposes only &&&&&&&&&&&& */
 
 List<String> bikeName = <String>[
-  'bike 1',
+  'Hero Honda 1',
   'bike 2',
   'bike 3',
   'bike 4',
@@ -17,9 +17,9 @@ List<String> bikeName = <String>[
   'bike 7',
   'bike 8'
 ];
-List<String> totalFare = <String>['1', '2', '3', '4', '5', '6', '7', '8'];
+List<String> totalFare = <String>['1', '2', '223', '4', '5', '6', '7', '8'];
 List<String> bikeOwnderName = <String>[
-  'Owner 1',
+  'Albus Dumbledore',
   'Owner 2',
   'Ownder 3',
   'Ownder 4',
@@ -116,59 +116,86 @@ class _BookingHistoryState extends State<BookingHistory> {
           itemCount: bikeName.length,
           itemBuilder: (BuildContext context, int index) {
             return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(17.0)),
-                      color: Color(0xFF2c2c37),
-                      child: Container(
-                        padding: EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              bikeName[index],
-                              style: TextStyle(
-                                fontFamily: 'Montserrat Bold',
-                                fontSize: 18.0,
-                                color: Color(0xFFe5e5e5),
-                              ),
+              padding: const EdgeInsets.all(6.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(17.0)),
+                color: Color(0xFF282833),
+                elevation: 45.0,
+                child: Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            //bike name
+                            bikeName[index],
+                            style: TextStyle(
+                              fontFamily: 'Montserrat Bold',
+                              fontSize: 22.0,
+                              color: Color(0xFFe5e5e5),
                             ),
-                            SizedBox(
-                              height: 8.0,
+                          ),
+                          SizedBox(
+                            height: 8.0,
+                          ),
+                          Text(
+                            //owner name
+                            bikeOwnderName[index],
+                            style: TextStyle(
+                              fontFamily: 'Montserrat Regular',
+                              fontSize: 12.0,
+                              color: Color(0xFFCA9367),
                             ),
-                            Text(
-                              bikeOwnderName[index],
-                              style: TextStyle(
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            //total fare
+                            'Total fare',
+                            style: TextStyle(
                                 fontFamily: 'Montserrat Regular',
                                 fontSize: 12.0,
-                                color: Color(0xFFCA9367),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 16.0,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  'Total fare',
-                                  style: TextStyle(
-                                      fontFamily: 'Montserrat Regular',
-                                      fontSize: 12.0,
-                                      color: Color(0xFFE5E5E5)),
+                                color: Color(0xFFE5E5E5)),
+                          ),
+                          Row(
+                            //with the word Rs and the value of total fare
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                'Rs.',
+                                style: TextStyle(
+                                  color: Color(0xFFFFF7c6),
+                                  fontFamily: 'Montserrat Regular',
+                                  fontSize: 12.0,
                                 ),
-                                Text('Rs. ${totalFare[index]}')
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                              SizedBox(
+                                width: 2.0,
+                              ),
+                              Text(
+                                totalFare[index],
+                                style: TextStyle(
+                                  color: Color(0xFFFFF7c6),
+                                  fontFamily: 'Montserrat Bold',
+                                  fontSize: 24.0,
+                                ),
+                              )
+                            ],
+                          )
+                        ],
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             );
             //   padding: const EdgeInsets.all(5.0),
