@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:karvaan/screens/MapsPage.dart';
 import 'package:karvaan/screens/sideNav/profile/Dashboard.dart';
 
+//About Karvaan.....
+
 class About extends StatefulWidget {
   @override
   _AboutState createState() => _AboutState();
 }
 
 class _AboutState extends State<About> {
+  //UI for About Page...
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +37,7 @@ class _AboutState extends State<About> {
         // ],
       ),
       body: SingleChildScrollView(
+        //Scrollable Screen
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -58,6 +62,7 @@ class _AboutState extends State<About> {
               height: 20.0,
             ),
             Container(
+              //Our App Icon....
               child: Image.asset(
                 'assets/images/ic_launcher_round.png',
                 height: 120,
@@ -162,3 +167,4 @@ class _AboutState extends State<About> {
     );
   }
 }
+//All about Karvaan.
