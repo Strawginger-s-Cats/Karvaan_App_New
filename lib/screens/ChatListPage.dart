@@ -15,7 +15,7 @@ class ChatListPage extends StatefulWidget {
 class _ChatListPageState extends State<ChatListPage> {
   String uId;
   List<ChatItem> chatListItems = <ChatItem>[];
-  
+
   //to get user id
   getUserId() {
     FirebaseAuth auth = FirebaseAuth.instance;
@@ -27,102 +27,190 @@ class _ChatListPageState extends State<ChatListPage> {
   @override
   void initState() {
     getUserId();
-    getChatList();
     super.initState();
   }
 
-  //to fetch the chat messages
-  Future getChatList() async {
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(uId)
-        .collection("chatlist")
-        .snapshots()
-        .listen((querySnapshot) {
-      setState(() {
-        querySnapshot.docs.forEach((doc) {
-          ChatItem request = new ChatItem(doc["name"], doc["forBike"],
-              doc["chatDoc"], doc["contact"], doc["id"]);
-          chatListItems.add(request);
-        });
-      });
-    });
-  }
+  // //to fetch the chat messages
+  // Future getChatList() async {
+  //   FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(uId)
+  //       .collection("chatlist")
+  //       .snapshots()
+  //       .listen((querySnapshot) {
+  //     setState(() {
+  //       querySnapshot.docs.forEach((doc) {
+  //         ChatItem request = new ChatItem(doc["name"], doc["forBike"],
+  //             doc["chatDoc"], doc["contact"], doc["id"]);
+  //         chatListItems.add(request);
+  //       });
+  //     });
+  //   });
+  // }
 
-  //to display
-  Widget displayContent() {
-    if (chatListItems.length == 0) {
-      return Center(
-        child: Text(
-          "You have no chats!",
-          style: TextStyle(
-            color: Color(0xFFFFC495),
-            fontFamily: "Montserrat SemiBold",
-          ),
-        ),
-      );
-    } else {
-      return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: ListView.builder(
-          itemCount: chatListItems.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(17)),
-              color: Color(0xFF282833),
-              child: ListTile(
-                onTap: () {
-                  return Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              ChatPage(chatListItems[index])));
-                },
-                leading: Container(
-                  height: 60,
-                  width: 60,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(60),
-                    image: DecorationImage(
-                        image: AssetImage('assets/images/profile.png'),
-                        fit: BoxFit.fill),
-                    shape: BoxShape.rectangle,
-                  ),
-                ),
-                title: Text(
-                  chatListItems[index].name,
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontFamily: "Montserrat Bold",
-                      color: Color(0xFFE5E5E5)),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          chatListItems[index].forBike,
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: "Montserrat SemiBold",
-                              color: Color(0xFFCA9367)),
-                        ),
-                      ],
-                    ),
-                  ],
+  Widget loadChatList() {
+    return StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(uId)
+            .collection("chatlist")
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Center(
+              child: Text(
+                "You have no chats!",
+                style: TextStyle(
+                  color: Color(0xFFFFC495),
+                  fontFamily: "Montserrat SemiBold",
                 ),
               ),
             );
-          },
-        ),
-      );
-    }
+          for (int i = 0; i < snapshot.data.documents.length; i++) {
+            ChatItem request = new ChatItem(
+                snapshot.data.documents[i]["name"],
+                snapshot.data.documents[i]["forBike"],
+                snapshot.data.documents[i]["chatDoc"],
+                snapshot.data.documents[i]["contact"],
+                snapshot.data.documents[i]["id"]);
+            chatListItems.add(request);
+          }
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ListView.builder(
+              itemCount: chatListItems.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(17)),
+                  color: Color(0xFF282833),
+                  child: ListTile(
+                    onTap: () {
+                      return Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ChatPage(chatListItems[index])));
+                    },
+                    leading: Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(60),
+                        image: DecorationImage(
+                            image: AssetImage('assets/images/profile.png'),
+                            fit: BoxFit.fill),
+                        shape: BoxShape.rectangle,
+                      ),
+                    ),
+                    title: Text(
+                      chatListItems[index].name,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: "Montserrat Bold",
+                          color: Color(0xFFE5E5E5)),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              chatListItems[index].forBike,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: "Montserrat SemiBold",
+                                  color: Color(0xFFCA9367)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
   }
+
+  //to display
+  // Widget displayContent() {
+  //   if (chatListItems.length == 0) {
+  //     return Center(
+  //       child: Text(
+  //         "You have no chats!",
+  //         style: TextStyle(
+  //           color: Color(0xFFFFC495),
+  //           fontFamily: "Montserrat SemiBold",
+  //         ),
+  //       ),
+  //     );
+  //   } else {
+  //     return Padding(
+  //       padding: const EdgeInsets.all(10.0),
+  //       child: ListView.builder(
+  //         itemCount: chatListItems.length,
+  //         itemBuilder: (BuildContext context, int index) {
+  //           return Card(
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(17)),
+  //             color: Color(0xFF282833),
+  //             child: ListTile(
+  //               onTap: () {
+  //                 return Navigator.push(
+  //                     context,
+  //                     MaterialPageRoute(
+  //                         builder: (context) =>
+  //                             ChatPage(chatListItems[index])));
+  //               },
+  //               leading: Container(
+  //                 height: 60,
+  //                 width: 60,
+  //                 decoration: BoxDecoration(
+  //                   borderRadius: BorderRadius.circular(60),
+  //                   image: DecorationImage(
+  //                       image: AssetImage('assets/images/profile.png'),
+  //                       fit: BoxFit.fill),
+  //                   shape: BoxShape.rectangle,
+  //                 ),
+  //               ),
+  //               title: Text(
+  //                 chatListItems[index].name,
+  //                 style: TextStyle(
+  //                     fontSize: 18,
+  //                     fontFamily: "Montserrat Bold",
+  //                     color: Color(0xFFE5E5E5)),
+  //               ),
+  //               subtitle: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   SizedBox(
+  //                     height: 5,
+  //                   ),
+  //                   Row(
+  //                     children: [
+  //                       Text(
+  //                         chatListItems[index].forBike,
+  //                         style: TextStyle(
+  //                             fontSize: 14,
+  //                             fontFamily: "Montserrat SemiBold",
+  //                             color: Color(0xFFCA9367)),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +244,7 @@ class _ChatListPageState extends State<ChatListPage> {
           )
         ],
       ),
-      body: displayContent(),
+      body: loadChatList(),
     );
   }
 }
