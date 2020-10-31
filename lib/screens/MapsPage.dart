@@ -30,12 +30,14 @@ class MapsPage extends StatefulWidget {
 }
 
 class _MapsPageState extends State<MapsPage> {
-  LatLng current_location, refresh_location;
-  List<Cycles> availableCycles = <Cycles>[];
-  String name, email, phone, uId;
+  LatLng current_location,
+      refresh_location; //to save last two locations of the user
+  List<Cycles> availableCycles = <Cycles>[]; // avalable cycles for rent
+  String name, email, phone, uId; //user  details
 
   @override
   void initState() {
+    //this runs on age startup
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     getUserInfo();
     getUserBikesFromFirebase();
@@ -50,6 +52,7 @@ class _MapsPageState extends State<MapsPage> {
   final GoogleSignIn googleSignIn = new GoogleSignIn();
 
   Future<void> signOutGoogle() async {
+    //signout from google account
     await googleSignIn.signOut();
   }
 
@@ -62,7 +65,8 @@ class _MapsPageState extends State<MapsPage> {
   //   // new LatLng(25.62,81.89),
   // ];
 
-  List<Marker> allMarkers = [];
+  List<Marker> allMarkers =
+      []; //list of all markers(available cycles) in the mao
 
   // setMarkers() {
   //   allMarkers.add(
@@ -87,9 +91,10 @@ class _MapsPageState extends State<MapsPage> {
   //   return allMarkers;
   // }
 
-  MapController controller = new MapController();
+  MapController controller = new MapController(); //controller for map
 
   Future getUserInfo() async {
+    //get user info
     //to get user information
     FirebaseAuth auth = FirebaseAuth.instance;
     if (auth.currentUser != null) {
@@ -109,6 +114,7 @@ class _MapsPageState extends State<MapsPage> {
   }
 
   getPermission() async {
+    //get location permission
     //ask permission for geolocation
     final GeolocationResult result =
         await Geolocation.requestLocationPermission(
@@ -129,6 +135,7 @@ class _MapsPageState extends State<MapsPage> {
   }
 
   Future getUserBikesFromFirebase() async {
+    //get available bikes from firebase database
     FirebaseFirestore.instance
         .collection('availableBikes')
         .where('onRent', isEqualTo: false)
@@ -190,7 +197,8 @@ class _MapsPageState extends State<MapsPage> {
   }
 
   Future sendChatRequest(String ownerId, String cycleName) async {
-    Firestore.instance //adding new lender bike document
+    //send chat request to the owner of selected bike
+    Firestore.instance
         .collection('users')
         .doc(ownerId)
         .collection("rentRequests")

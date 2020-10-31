@@ -55,7 +55,7 @@ class _RequestPageState extends State<RequestPage> {
   }
 
   Future createChatList(Request request) async {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection('users')
         .doc(uId)
         .collection("chatlist")
@@ -68,7 +68,7 @@ class _RequestPageState extends State<RequestPage> {
       'id': request.renterId,
     });
 
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection('users')
         .doc(request.renterId)
         .collection("chatlist")
@@ -77,7 +77,8 @@ class _RequestPageState extends State<RequestPage> {
       'name': name,
       'forBike': request.bikeName,
       'contact': phone,
-      'chatDoc': uId + request.renterId
+      'chatDoc': uId + request.renterId,
+      'id': uId
     });
 
     Firestore.instance //adding new lender bike document
