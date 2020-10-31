@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocation/geolocation.dart';
+import 'package:karvaan/models/ChatItem.dart';
 import 'package:karvaan/models/Cycles.dart';
 import 'package:karvaan/screens/ChatPage.dart';
 import 'package:karvaan/screens/PaymentsPage.dart';
@@ -761,28 +762,31 @@ class _MapsPageState extends State<MapsPage> {
                 color: Color(0xFF282833),
               ),
               // /* &&&&&&   Added a test list tile for enterPrice page &&&&&&&&&&&&&&&&&*/
-              // ListTile(
-              //   leading: Icon(
-              //     Icons.monetization_on,
-              //     color: Color(0xFFFFC495),
-              //   ),
-              //   title: Text(
-              //     'Test Price page',
-              //     style: TextStyle(
-              //         fontFamily: 'Montserrat SemiBold',
-              //         color: Color(0xFFFFC495)),
-              //   ),
-              //   onTap: () {
-              //     return Navigator.push(context,
-              //         MaterialPageRoute(builder: (context) => PaymentsPage()));
-              //     // app settings
-              //     // ...
-              //   },
-              // ),
-              // Divider(
-              //   thickness: 1,
-              //   color: Color(0xFF282833),
-              // ),
+              ListTile(
+                leading: Icon(
+                  Icons.monetization_on,
+                  color: Color(0xFFFFC495),
+                ),
+                title: Text(
+                  'Test Price page',
+                  style: TextStyle(
+                      fontFamily: 'Montserrat SemiBold',
+                      color: Color(0xFFFFC495)),
+                ),
+                onTap: () {
+                  return Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PaymentsPage(new ChatItem(
+                              "Name", "Yantriki", "ab", "8888888888", "abb"))));
+                  // app settings
+                  // ...
+                },
+              ),
+              Divider(
+                thickness: 1,
+                color: Color(0xFF282833),
+              ),
               // /* &&&&&&&&&&&&&&&&&&&&& Test list tile ends here &&&&&&&&&&&&&& */
               ListTile(
                 leading: Icon(

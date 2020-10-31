@@ -12,7 +12,6 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 class PaymentsPage extends StatefulWidget {
   final ChatItem receiver;
   PaymentsPage(this.receiver);
-
   @override
   _PaymentsPageState createState() => _PaymentsPageState(receiver);
 }
@@ -106,7 +105,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
   void openCheckout() async {
     var options = {
       'key': 'rzp_test_pktpc4ByZO5zS3',
-      'amount': int.parse(priceController.text.toString()),
+      'amount': double.parse(priceController.text.toString()) * 100,
       'name': receiver.name,
       'description': receiver.forBike,
       'prefill': {
