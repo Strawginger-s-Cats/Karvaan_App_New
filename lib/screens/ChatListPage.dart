@@ -15,7 +15,8 @@ class ChatListPage extends StatefulWidget {
 class _ChatListPageState extends State<ChatListPage> {
   String uId;
   List<ChatItem> chatListItems = <ChatItem>[];
-
+  
+  //to get user id
   getUserId() {
     FirebaseAuth auth = FirebaseAuth.instance;
     if (auth.currentUser != null) {
@@ -30,6 +31,7 @@ class _ChatListPageState extends State<ChatListPage> {
     super.initState();
   }
 
+  //to fetch the chat messages
   Future getChatList() async {
     FirebaseFirestore.instance
         .collection('users')
@@ -47,6 +49,7 @@ class _ChatListPageState extends State<ChatListPage> {
     });
   }
 
+  //to display
   Widget displayContent() {
     if (chatListItems.length == 0) {
       return Center(
