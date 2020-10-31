@@ -9,18 +9,23 @@ import 'package:otp_text_field/style.dart';
 import 'package:toast/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//Begin.....
+
 final int user = 0;
 
 class OTPpage extends StatefulWidget {
+  //defined a class, OTPpage
   final phoneNumber;
-  OTPpage(this.phoneNumber);
+
+  OTPpage(this.phoneNumber); //constructor which takes phoneNumber as parameter
   @override
   _OTPpageState createState() => _OTPpageState(phoneNumber);
 }
 
 class _OTPpageState extends State<OTPpage> {
+  //Firebase Authentication
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final databaseReference = Firestore.instance;
+  final databaseReference = Firestore.instance; //using Firestore instance
 
   String inputData() {
     final User user = _auth.currentUser;
@@ -33,26 +38,28 @@ class _OTPpageState extends State<OTPpage> {
 
   void createRecord(String phoneNo) async {
     await databaseReference.collection("users").document(inputData()).setData({
+      //creating records of the user..
       'phoneNo': phoneNo,
       'name': "",
       'email': "",
     });
   }
 
-  String phoneNumber;
+  String phoneNumber; //constructor for taking phone number
   _OTPpageState(this.phoneNumber);
 
-  String verificationId, smsCode;
+  String verificationId, smsCode; //constructor for smscode/verification id
   bool codeSent = false;
 
   @override
   void initState() {
-    verifyPhone(phoneNumber);
+    verifyPhone(phoneNumber); //verifying phone number
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    //Starting with the app UI
     return Scaffold(
       appBar: AppBar(
         // toolbarHeight: 35,
@@ -64,9 +71,11 @@ class _OTPpageState extends State<OTPpage> {
       ),
       backgroundColor: Color(0xFFFFC495),
       body: SingleChildScrollView(
+        //Scrollable Screen
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            //Child 1: Container for Heading
             Container(
               alignment: Alignment.center,
               margin: EdgeInsets.fromLTRB(40, 10, 40, 0),
@@ -80,6 +89,8 @@ class _OTPpageState extends State<OTPpage> {
                 ),
               ),
             ),
+
+            //Child 2: Container for OTP text field
             Container(
               margin: EdgeInsets.fromLTRB(35, 20, 100, 0),
               child: OTPTextField(
@@ -99,9 +110,12 @@ class _OTPpageState extends State<OTPpage> {
                 },
               ),
             ),
+
+            //Child 3: Column
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //Child 3.1: If you haven't received OTP....
                 Container(
                   margin: EdgeInsets.fromLTRB(40, 20, 40, 0),
                   child: Text(
@@ -112,6 +126,8 @@ class _OTPpageState extends State<OTPpage> {
                         color: Color(0xFF454551D1)),
                   ),
                 ),
+
+                //Child 3.2: Resend OTP...
                 Container(
                   margin: EdgeInsets.fromLTRB(40, 10, 40, 0),
                   child: new GestureDetector(
@@ -129,6 +145,8 @@ class _OTPpageState extends State<OTPpage> {
                 )
               ],
             ),
+
+            //Child 4: Verifying the user....
             Container(
                 height: 56,
                 decoration: BoxDecoration(
@@ -183,16 +201,19 @@ class _OTPpageState extends State<OTPpage> {
   }
 
   Future<void> verifyPhone(phoneNumber) async {
+    //method for verifying phone number
     final PhoneVerificationCompleted verified = (AuthCredential authResult) {
       AuthService().signIn(authResult);
     };
 
-    final PhoneVerificationFailed verificationfailed =
+    final PhoneVerificationFailed
+        verificationfailed = //method, if verification fails
         (FirebaseAuthException authException) {
       print('${authException.message}');
     };
 
     final PhoneCodeSent smsSent = (String verId, [int forceResend]) {
+      //method, sending sms code
       this.verificationId = verId;
       setState(() {
         this.codeSent = true;
@@ -200,10 +221,12 @@ class _OTPpageState extends State<OTPpage> {
     };
 
     final PhoneCodeAutoRetrievalTimeout autoTimeOut = (String verId) {
+      //method, timeout
       this.verificationId = verId;
     };
 
     await FirebaseAuth.instance.verifyPhoneNumber(
+        //awaiting firebase authentication......
         phoneNumber: phoneNumber,
         timeout: const Duration(seconds: 60),
         verificationCompleted: verified,

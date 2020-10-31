@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:karvaan/models/Cycles.dart';
 import 'package:karvaan/models/Request.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:toast/toast.dart';
@@ -37,83 +38,48 @@ class BookingHistory extends StatefulWidget {
 }
 
 class _BookingHistoryState extends State<BookingHistory> {
-  void nothing() {
-    //this function contains commented out code
-    // String uId;
-    // List<Request> requests = <Request>[];
-
-    // getUserId() {
-    //   FirebaseAuth auth = FirebaseAuth.instance;
-    //   if (auth.currentUser != null) {
-    //     uId = auth.currentUser.uid;
-    //   }
-    // }
-
-    // Future getRentRequestsFromFirebase() async {
-    //   FirebaseFirestore.instance
-    //       .collection('users')
-    //       .doc(uId)
-    //       .collection("rentRequests")
-    //       .snapshots()
-    //       .listen((querySnapshot) {
-    //     setState(() {
-    //       querySnapshot.docs.forEach((doc) {
-    //         Request request = new Request(doc["renterId"], doc["renterName"],
-    //             doc["renterPhone"], doc["location"]);
-    //         requests.add(request);
-    //       });
-    //     });
-    //   });
-    // }
-
-    // Future createChatDoc(String renterId) async {
-    //   Firestore.instance //adding new lender bike document
-    //       .collection('chats')
-    //       .doc(uId + renterId) //chat doc is named as lenderId + renterId
-    //       .set({'bookingFinal': false});
-    // }
-
-    // Future<void> deleteRequest(String name) {
-    //   Firestore.instance
-    //       .collection('users')
-    //       .doc(uId)
-    //       .collection("renterRequests")
-    //       .doc(name)
-    //       .delete();
-    // }
-
-    // @override
-    // void initState() {
-    //   getUserId();
-    //   getRentRequestsFromFirebase();
-    //   super.initState();
-    // }
+  String uId;
+  List<Cycles> allBookings = <Cycles>[];
+  Future getBookingHistory() async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .collection("history")
+        .snapshots()
+        .listen((querySnapshot) {
+      setState(() {
+        querySnapshot.docs.forEach((doc) {
+          Cycles request = new Cycles.fromCycles(
+              doc["ownerName"], doc["bikeName"], doc["totalFare"]);
+          allBookings.add(request);
+        });
+      });
+    });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF1E1E29),
-      appBar: AppBar(
-        // toolbarHeight: 35,
-        backgroundColor: Color(0xFF2C2C37),
-        iconTheme: IconThemeData(
-          color: Color(0xFFFFC495),
-        ),
-        centerTitle: true,
-        title: Text(
-          "Previous Bookings",
+  getUserId() {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (auth.currentUser != null) {
+      uId = auth.currentUser.uid;
+    }
+  }
+
+  Widget displayWidget() {
+    if (allBookings.length == 0) {
+      return Center(
+        child: Text(
+          "You have no bookings!",
           style: TextStyle(
-              fontFamily: "Montserrat Bold",
-              color: Color(0xFFE5E5E5),
-              fontSize: 16),
+            color: Color(0xFFFFC495),
+            fontFamily: "Montserrat SemiBold",
+          ),
         ),
-        elevation: 0,
-      ),
-      body: Padding(
+      );
+    } else {
+      return Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0),
         child: ListView.builder(
-          itemCount: bikeName.length,
+          itemCount: allBookings.length,
           itemBuilder: (BuildContext context, int index) {
             return Padding(
               padding: const EdgeInsets.all(6.0),
@@ -131,7 +97,7 @@ class _BookingHistoryState extends State<BookingHistory> {
                         children: [
                           Text(
                             //bike name
-                            bikeName[index],
+                            allBookings[index].name,
                             style: TextStyle(
                               fontFamily: 'Montserrat Bold',
                               fontSize: 22.0,
@@ -143,7 +109,7 @@ class _BookingHistoryState extends State<BookingHistory> {
                           ),
                           Text(
                             //owner name
-                            bikeOwnderName[index],
+                            allBookings[index].owner,
                             style: TextStyle(
                               fontFamily: 'Montserrat Regular',
                               fontSize: 12.0,
@@ -182,7 +148,7 @@ class _BookingHistoryState extends State<BookingHistory> {
                                 width: 2.0,
                               ),
                               Text(
-                                totalFare[index],
+                                allBookings[index].pricePerHr,
                                 style: TextStyle(
                                   color: Color(0xFFFFF7c6),
                                   fontFamily: 'Montserrat Bold',
@@ -236,7 +202,31 @@ class _BookingHistoryState extends State<BookingHistory> {
             // );
           },
         ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFF1E1E29),
+      appBar: AppBar(
+        // toolbarHeight: 35,
+        backgroundColor: Color(0xFF2C2C37),
+        iconTheme: IconThemeData(
+          color: Color(0xFFFFC495),
+        ),
+        centerTitle: true,
+        title: Text(
+          "Previous Bookings",
+          style: TextStyle(
+              fontFamily: "Montserrat Bold",
+              color: Color(0xFFE5E5E5),
+              fontSize: 16),
+        ),
+        elevation: 0,
       ),
+      body: displayWidget(),
     );
   }
 }

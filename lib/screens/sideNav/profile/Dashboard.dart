@@ -28,19 +28,26 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String uId, name = "Error!", phone = 'Error!', email = "Error!";
+  String uId,
+      name = "Error!",
+      phone = 'Error!',
+      email = "Error!"; //defined default values for the fields.
   String _imageUrl;
-  List<Cycles> allCycles = <Cycles>[];
+  List<Cycles> allCycles = <Cycles>[]; //Dynamic List of Cycles.
   Cycles newCycle;
-  TextEditingController _newBikeNameController = new TextEditingController();
-  TextEditingController _newBikeRentController = new TextEditingController();
-  TextEditingController _newBikeLocationController =
+  TextEditingController _newBikeNameController =
+      new TextEditingController(); //controller for bike name
+  TextEditingController _newBikeRentController =
+      new TextEditingController(); //controller for bike rent
+  TextEditingController
+      _newBikeLocationController = //controller for bike location
       new TextEditingController();
-  bool isSwitched = false;
+  bool isSwitched = false; //default value for switch
 
-  Geoflutterfire geo = new Geoflutterfire();
+  Geoflutterfire geo = new Geoflutterfire(); //Location Characteristics
 
   getUserId() {
+    //getting UserId from firestore collection...
     FirebaseAuth auth = FirebaseAuth.instance;
     if (auth.currentUser != null) {
       uId = auth.currentUser.uid;
@@ -48,6 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future getUserInfo() async {
+    //Extracting user info from firestore...
     //to get user information
     FirebaseFirestore.instance
         .collection('users')
@@ -63,6 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future getUserBikesFromFirebase() async {
+    //Getting user bikes info from firebase
     FirebaseFirestore.instance
         .collection('users')
         .doc(uId)
@@ -91,6 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
+    //initState...
     getUserId();
     getUserInfo();
     getUserBikesFromFirebase();
@@ -98,10 +108,12 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     var ref =
         FirebaseStorage.instance.ref().child('users/' + uId + '/profile.png');
-    ref.getDownloadURL().then((loc) => setState(() => _imageUrl = loc));
+    ref.getDownloadURL().then((loc) =>
+        setState(() => _imageUrl = loc)); //setting path for profile image
   }
 
   Future<void> deleteBike(String name) {
+    //Wanna Remove your Cycle??
     FirebaseFirestore.instance //adding new bike document
         .collection('users')
         .doc(uId)
@@ -127,7 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
         .collection("lenderBikes")
         .doc(newCycle.name)
         .set({
-      'coordinates':
+      'coordinates': //specifying coordinates on the map.....
           new GeoPoint(first.coordinates.latitude, first.coordinates.longitude),
       'location': newCycle.location,
       'pricePerHr': newCycle.pricePerHr,
@@ -136,7 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
       'owner': name,
     });
 
-    FirebaseFirestore.instance //adding new bike document
+    FirebaseFirestore.instance //adding new cycle document
         .collection('users')
         .doc(uId)
         .update({'isLender': true}).then((value) => print("Updated"));
@@ -144,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
     GeoFirePoint point = geo.point(
         latitude: first.coordinates.latitude,
         longitude: first.coordinates.longitude);
-    FirebaseFirestore.instance //adding new availble bike document
+    FirebaseFirestore.instance //adding new availble cycle document
         .collection('availableBikes')
         .doc(newCycle.name)
         .set({
@@ -159,6 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<int> createAlertDialog(BuildContext context) {
+    //Creating Dialog Box for taking cycle info from Lender...
     return showDialog(
         context: context,
         builder: (context) {
@@ -342,8 +355,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             onPressed: () async {
                               addItemToList();
                               addNewBikeToFirebase();
-                              Toast.show("Incomplete!", context,
-                                  duration: Toast.LENGTH_SHORT);
+                              // Toast.show("Incomplete!", context,
+                              //     duration: Toast.LENGTH_SHORT);
                               Navigator.of(context).pop(); //pass bike data
                             },
                             child: Center(
@@ -368,6 +381,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void addItemToList() {
+    //Method to add cycles dynamically to the list...
     newCycle = new Cycles(
         _newBikeNameController.text.toString(),
         uId,
@@ -378,6 +392,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget displayBikeList() {
+    //Widget for displaying bike list..
     if (allCycles.length == 0) {
       return Center(
         child: Text(
@@ -485,6 +500,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    //Here starts the UI of the overall Dashboard Screen....
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xFF2C2C37),

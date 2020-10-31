@@ -17,6 +17,7 @@ class PaymentsPage extends StatefulWidget {
 }
 
 class _PaymentsPageState extends State<PaymentsPage> {
+  String uId;
   final ChatItem receiver;
   _PaymentsPageState(this.receiver);
 
@@ -87,8 +88,29 @@ class _PaymentsPageState extends State<PaymentsPage> {
     );
   }
 
+  Future updateBookingHistory() async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .collection("history")
+        .doc()
+        .set({
+      "ownerName": receiver.name,
+      "bikeName": receiver.forBike,
+      "totalFare": priceController.text.toString()
+    });
+  }
+
+  getUserId() {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (auth.currentUser != null) {
+      uId = auth.currentUser.uid;
+    }
+  }
+
   @override
   void initState() {
+    getUserId();
     super.initState();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
@@ -98,6 +120,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
   @override
   void dispose() {
+    priceController.dispose();
     _razorpay.clear();
     super.dispose();
   }
@@ -125,7 +148,8 @@ class _PaymentsPageState extends State<PaymentsPage> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    Fluttertoast.showToast(msg: "SUCCESS: " + response.paymentId);
+    updateBookingHistory();
+    Fluttertoast.showToast(msg: "Booking Confirmed! iD: " + response.paymentId);
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {

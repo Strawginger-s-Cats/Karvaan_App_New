@@ -9,22 +9,28 @@ import 'package:image_picker/image_picker.dart';
 
 class EditProfile extends StatefulWidget {
   final String currentUserId;
-  EditProfile(this.currentUserId);
+  EditProfile(
+      this.currentUserId); //Constructor taking currentUserId as parameter
   @override
   _EditProfileState createState() => _EditProfileState();
 }
 
 class _EditProfileState extends State<EditProfile> {
-  String uId, name = "", phone = '', email = "";
+  String uId,
+      name = "",
+      phone = '',
+      email = ""; //Default values for the fields.
   String _imageUrl, profImagePath;
   bool isLoading = false;
   User user;
-  TextEditingController _emailController;
+  TextEditingController
+      _emailController; //controllers for email and username fields, kept private.
   TextEditingController _usernameController;
   bool _isEditingText = false;
   bool _isEditingUser = false;
 
   getUserId() {
+    //getting user id from database, cloud firestore
     FirebaseAuth auth = FirebaseAuth.instance;
     if (auth.currentUser != null) {
       uId = auth.currentUser.uid;
@@ -63,6 +69,7 @@ class _EditProfileState extends State<EditProfile> {
     getUserId();
     getUserInfo();
     super.initState();
+    //setting initial values of fields of email,username....
     _emailController = TextEditingController(text: email);
     _usernameController = TextEditingController(text: name);
     var ref =
@@ -72,6 +79,7 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    //UI for the Edit Profile Page
     return Scaffold(
       backgroundColor: Color(0xFF1E1E29),
       appBar: AppBar(
@@ -101,7 +109,8 @@ class _EditProfileState extends State<EditProfile> {
             ),
             onPressed: () {
               updateInfo();
-              uploadProfilePicture(profImagePath);
+              uploadProfilePicture(
+                  profImagePath); //saves and updates the changes in dashboard..
               Toast.show("Changes Saved", context,
                   duration: Toast.LENGTH_SHORT);
             },
@@ -169,7 +178,7 @@ class _EditProfileState extends State<EditProfile> {
                             source: ImageSource.gallery);
                         print(image.path);
                         setState(() {
-                          profImagePath = image.path.toString();
+                          profImagePath = image.path.toString(); //Image Picker
                         });
                         ;
                       },
@@ -230,7 +239,7 @@ class _EditProfileState extends State<EditProfile> {
                               ),
                               onPressed: () {},
                             ),
-                          ],
+                          ], //Can't edit the phone number
                         ),
                       ),
                       onTap: () async {
@@ -296,6 +305,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   uploadProfilePicture(String imagePath) async {
+    //uploading profile picture,specifying path
     File file = File(imagePath);
     try {
       await FirebaseStorage.instance

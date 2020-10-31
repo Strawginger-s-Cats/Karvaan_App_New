@@ -7,22 +7,29 @@ import 'package:toast/toast.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+//Begin....
+
 class LogInPage extends StatefulWidget {
   @override
   _LogInPageState createState() => _LogInPageState();
 }
 
 class _LogInPageState extends State<LogInPage> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance; //Firebase Authentication...
   FirebaseUser _user;
-  final GoogleSignIn googleSignIn = new GoogleSignIn();
+  final GoogleSignIn googleSignIn =
+      new GoogleSignIn(); //Google Sign-In Method....
 
   static bool isSignIn = false;
+
+  //Authenticating with Google Account....
 
   Future<void> handleSignIn() async {
     GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
     GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount.authentication;
+
+    //providing credentials....
 
     AuthCredential credential = GoogleAuthProvider.getCredential(
         idToken: googleSignInAuthentication.idToken,
@@ -39,17 +46,24 @@ class _LogInPageState extends State<LogInPage> {
 
   @override
   Widget build(BuildContext context) {
+    //Implementing UI of the Login Screen...
+    //using Scaffold widget.......
     return Scaffold(
         backgroundColor: Color(0xFFFFC495),
+        //using Column View.....
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            //Image Insertion.....
+            //Child 1
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 128, 24, 0),
               child: Container(
                 child: Image(image: AssetImage('assets/images/log.png')),
               ),
             ),
+
+            //Child 2:Welcome....
             Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.fromLTRB(20, 50, 20, 0),
@@ -63,6 +77,8 @@ class _LogInPageState extends State<LogInPage> {
                     letterSpacing: -0.76,
                   ),
                 )),
+
+            //Child 3:Intro Line
             Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.fromLTRB(20, 0, 20, 30),
@@ -75,6 +91,8 @@ class _LogInPageState extends State<LogInPage> {
                     fontSize: 15,
                   ),
                 )),
+
+            //Child 4: Login through Phone Number
             Container(
                 height: 56,
                 decoration: BoxDecoration(
@@ -98,6 +116,8 @@ class _LogInPageState extends State<LogInPage> {
                           fontFamily: 'Montserrat SemiBold',
                           color: Color(0xFFE5E5E5))),
                 )),
+
+            //Child 5: Google sign In...
             Container(
               height: 56,
               decoration: BoxDecoration(
@@ -125,3 +145,4 @@ class _LogInPageState extends State<LogInPage> {
         ));
   }
 }
+//End
