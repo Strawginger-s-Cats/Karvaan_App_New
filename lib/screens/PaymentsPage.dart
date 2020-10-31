@@ -7,6 +7,7 @@ import 'package:karvaan/models/ChatItem.dart';
 import 'package:karvaan/models/Request.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:toast/toast.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class PaymentsPage extends StatefulWidget {
   final ChatItem receiver;
@@ -19,6 +20,9 @@ class _PaymentsPageState extends State<PaymentsPage> {
   final ChatItem receiver;
   _PaymentsPageState(this.receiver);
 
+  static const platform = const MethodChannel("razorpay_flutter");
+
+  Razorpay _razorpay;
   TextEditingController priceController = new TextEditingController();
 
   @override
@@ -75,10 +79,61 @@ class _PaymentsPageState extends State<PaymentsPage> {
             ),
             onPressed: () {
               //enter on pressed code here
+              openCheckout();
             },
           )
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+
+  void openCheckout() async {
+    var options = {
+      'key': 'rzp_test_pktpc4ByZO5zS3',
+      'amount': double.parse(priceController.text.toString()) * 100,
+      'name': receiver.name,
+      'description': receiver.forBike,
+      'prefill': {
+        'contact': receiver.contact,
+        'email': 'test@razorpay.com'
+      }, //for test {'contact': '8888888888', 'email': 'test@razorpay.com'}
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint(e);
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(msg: "SUCCESS: " + response.paymentId);
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+        msg: "ERROR: " + response.code.toString() + " - " + response.message);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(msg: "EXTERNAL_WALLET: " + response.walletName);
   }
 }
