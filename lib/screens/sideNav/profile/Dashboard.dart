@@ -114,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> deleteBike(String name) {
     //Wanna Remove your Cycle??
-    FirebaseFirestore.instance //adding new bike document
+    FirebaseFirestore.instance
         .collection('users')
         .doc(uId)
         .collection("lenderBikes")
