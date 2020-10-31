@@ -349,8 +349,8 @@ class _EditProfileState extends State<EditProfile> {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 17),
-            child: Text(
-              email,
+            child: Text(_isEditingText ?
+              _emailController.text: email,
               style: TextStyle(
                   color: Color(0xFFE5E5E5),
                   fontSize: 16.0,
@@ -389,7 +389,7 @@ class _EditProfileState extends State<EditProfile> {
         });
       },
       child: Text(
-        name,
+        _isEditingUser ? _usernameController.text :name,
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 28.0,
