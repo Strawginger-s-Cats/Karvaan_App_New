@@ -37,6 +37,7 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
   }
 
+  //to fetch message from database
   Widget chatMessageList() {
     return StreamBuilder(
       stream: chatMessageStream,
@@ -56,6 +57,7 @@ class _ChatPageState extends State<ChatPage> {
 
   TextEditingController _chatBoxController = new TextEditingController();
 
+  //to get user id
   String getUserId() {
     FirebaseAuth auth = FirebaseAuth.instance;
     if (auth.currentUser != null) {
@@ -64,6 +66,7 @@ class _ChatPageState extends State<ChatPage> {
     return uId;
   }
 
+  //to fetch user information
   Future getUserInfo() async {
     //to get user information
     FirebaseFirestore.instance
@@ -79,6 +82,7 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
+  //to save the messages in the database
   sendMessage() {
     if (_chatBoxController.text.isNotEmpty) {
       //getUserInfo();
@@ -92,6 +96,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  //calling this method in above method to save data 
   addConversationMessages(String chatId, messageMap) {
     FirebaseFirestore.instance
         .collection("chats")
@@ -103,6 +108,7 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
+  //to get/fetch coversation messages
   getConversationMessages(String chatId) async {
     return await FirebaseFirestore.instance
         .collection("chats")
@@ -112,6 +118,7 @@ class _ChatPageState extends State<ChatPage> {
         .snapshots();
   }
 
+  //confrmation dilogue box
   Future<int> createConfirmationDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -236,6 +243,7 @@ class _ChatPageState extends State<ChatPage> {
         });
   }
 
+  //cancel dilogue box
   Future<int> createCancelationDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -362,6 +370,7 @@ class _ChatPageState extends State<ChatPage> {
         });
   }
 
+  //to clear chat
   Future<void> clearChat() {
     FirebaseFirestore.instance
         .collection('chats')
@@ -556,6 +565,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 }
 
+
+//for massage cloud
 class MessageTile extends StatelessWidget {
   final String message;
   final bool isSendByMe;

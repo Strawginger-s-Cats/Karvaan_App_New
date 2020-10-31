@@ -15,6 +15,7 @@ class _RequestPageState extends State<RequestPage> {
   bool isLender;
   List<Request> requests = <Request>[];
 
+  //to get user id
   getUserId() {
     FirebaseAuth auth = FirebaseAuth.instance;
     if (auth.currentUser != null) {
@@ -22,6 +23,7 @@ class _RequestPageState extends State<RequestPage> {
     }
   }
 
+  //to fetch user info
   Future getUserInfo() async {
     //to get user information
     FirebaseFirestore.instance
